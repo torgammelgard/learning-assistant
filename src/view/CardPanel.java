@@ -18,6 +18,7 @@ public class CardPanel extends JPanel {
     private String[] answers;
     private JLabel questionLabel;
     private JList<String> answerList;
+    private DefaultListModel<String> listModel;
 
     public CardPanel() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -63,7 +64,7 @@ public class CardPanel extends JPanel {
                 return rowLabel;
             }
         });
-        DefaultListModel<String> listModel = new DefaultListModel<>();
+        listModel = new DefaultListModel<>();
         for (String item : answers) {
             listModel.addElement(item);
         }
@@ -81,5 +82,11 @@ public class CardPanel extends JPanel {
         box.add(Box.createVerticalGlue());
 
         add(box);
+    }
+
+    public void addAnswerRow() {
+        listModel.addElement("");
+        answerList.invalidate();
+        answerList.ensureIndexIsVisible(listModel.getSize()-1);
     }
 }
