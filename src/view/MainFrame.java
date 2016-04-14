@@ -1,17 +1,19 @@
 package view;
 
+import model.Card;
+import model.DBSource;
+
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 /**
  * Created by torgammelgard on 2016-04-11.
  */
 public class MainFrame extends JFrame {
+
 
     public MainFrame() throws HeadlessException {
         getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
@@ -31,11 +33,38 @@ public class MainFrame extends JFrame {
             }
         });
         add(testButton);
-        setPreferredSize(new Dimension(800, 600));
 
+
+        testDB();
+
+
+        setPreferredSize(new Dimension(800, 600));
         pack();
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
+    }
+
+    @Override
+    public void dispose() {
+        System.out.println("Closing Mongo Client");
+        DBSource.closeMongoClient();
+
+        super.dispose();
+    }
+
+    private void testDB() {
+
+        // Test mongodb driver by printing all database names
+        for (String DBName : DBSource.getMongoClient().listDatabaseNames()) {
+            System.out.println(DBName);
+        }
+
+        Card card1 = new Card();
+        card1.setQuestion("What is pi?");
+        card1.setAnswerAlternatives(new String[]{"3.14", "34.5", "A donkey"});
+
+
+        DBSource.addCard(card1);
     }
 }
