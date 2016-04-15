@@ -1,10 +1,16 @@
 package model;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.Block;
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.Document;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by torgammelgard on 2016-04-11.
@@ -12,7 +18,6 @@ import java.util.Arrays;
 public class DBSource {
 
     private static final String DB_NAME = "learning_assistant";
-    private static final String COLLECTION_NAME = "countries";
     private static final MongoClient mongoClient = new MongoClient();
 
     private DBSource() {
@@ -26,17 +31,39 @@ public class DBSource {
         mongoClient.close();
     }
 
-    public static boolean addCard(Card card) {
+    public static void addCard(Card card, String collectionName) {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
-        db.getCollection(COLLECTION_NAME).insertOne(
+        db.getCollection(collectionName).insertOne(
                 new Document("question", card.getQuestion()).append("answerAlternatives", Arrays.asList(card.getAnswerAlternatives())));
-        System.out.println("Count is : " + db.getCollection(COLLECTION_NAME).count());
-
-        return true;
     }
 
-    public static Card getCard() {
-        return null; // TODO
+    public static boolean deleteCard(Card card, String collectionName) {
+        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
+
+        DeleteResult deleteResult = db.getCollection(collectionName).deleteOne(new Document("question", card.getQuestion()));
+        return deleteResult.getDeletedCount() > 0;
+    }
+
+    public static List<Card> getCollection(String collectionName) {
+        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
+
+        FindIterable<Document> res = db.getCollection(collectionName).find();
+
+        ArrayList<Card> cards = new ArrayList<>();
+
+        res.forEach(new Block<Document>() {
+
+            @Override
+            public void apply(Document document) {
+                Card card = new Card();
+                card.setQuestion((String) document.get("question"));
+                ArrayList<Object> ansAlts = (ArrayList<Object>) document.get("answerAlternatives");
+                card.setAnswerAlternatives(ansAlts.toArray(new String[]{}));
+                cards.add(card);
+            }
+        });
+
+        return cards;
     }
 }

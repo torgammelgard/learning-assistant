@@ -14,22 +14,28 @@ import java.awt.event.ActionListener;
  */
 public class MainFrame extends JFrame {
 
+    private CtrlButtonPanel ctrlButtonPanel;
+    private CardPanel cardPanel;
 
     public MainFrame() throws HeadlessException {
         getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
 
-        CardPanel cardPanel1 = new CardPanel("What is the capital of Sweden?", new String[]{"Stockholm", "Oslo", "Copenhagen", "Stockholm", "Oslo", "Copenhagen", "Stockholm", "Oslo", "Copenhagen", "Stockholm", "Oslo", "Copenhagen"});
-        cardPanel1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cardPanel = new CardPanel("What is the capital of Sweden?", new String[]{"Stockholm", "Oslo", "Copenhagen", "Stockholm", "Oslo", "Copenhagen", "Stockholm", "Oslo", "Copenhagen", "Stockholm", "Oslo", "Copenhagen"});
+        cardPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(Box.createVerticalGlue());
-        add(cardPanel1);
+        add(cardPanel);
         add(Box.createVerticalGlue());
-        cardPanel1.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+        cardPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+
+        ctrlButtonPanel = new CtrlButtonPanel();
+        add(ctrlButtonPanel);
+
         JButton testButton = new JButton("THIS IS A TEST BUTTON");
         testButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         testButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardPanel1.addAnswerRow();
+                cardPanel.addAnswerRow();
             }
         });
         add(testButton);
@@ -53,6 +59,15 @@ public class MainFrame extends JFrame {
         super.dispose();
     }
 
+
+    public CtrlButtonPanel getCtrlButtonPanel() {
+        return ctrlButtonPanel;
+    }
+
+    public CardPanel getCardPanel() {
+        return cardPanel;
+    }
+
     private void testDB() {
 
         // Test mongodb driver by printing all database names
@@ -60,11 +75,5 @@ public class MainFrame extends JFrame {
             System.out.println(DBName);
         }
 
-        Card card1 = new Card();
-        card1.setQuestion("What is pi?");
-        card1.setAnswerAlternatives(new String[]{"3.14", "34.5", "A donkey"});
-
-
-        DBSource.addCard(card1);
     }
 }

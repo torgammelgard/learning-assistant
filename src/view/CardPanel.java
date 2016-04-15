@@ -83,6 +83,16 @@ public class CardPanel extends JPanel {
 
         add(box);
     }
+    public void showCard(Card card) {
+        question = card.getQuestion();
+        answers = card.getAnswerAlternatives();
+
+        questionLabel.setText(question);
+        listModel.clear();
+        for (String item : answers) {
+            listModel.addElement(item);
+        }
+    }
 
     public void addAnswerRow() {
         listModel.addElement("");
