@@ -22,4 +22,9 @@ public class Card {
     public void setAnswerAlternatives(String[] answerAlternatives) {
         this.answerAlternatives = answerAlternatives;
     }
+
+    @Override
+    public String toString() {
+        return "Card with question (" + question + ")" + " and correct answer (" + answerAlternatives[0] + ")";
+    }
 }

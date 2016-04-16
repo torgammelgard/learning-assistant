@@ -1,6 +1,5 @@
 package model;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;

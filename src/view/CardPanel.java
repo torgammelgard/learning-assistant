@@ -89,6 +89,8 @@ public class CardPanel extends JPanel {
 
         questionLabel.setText(question);
         listModel.clear();
+        if (answers == null)
+            return;
         for (String item : answers) {
             listModel.addElement(item);
         }

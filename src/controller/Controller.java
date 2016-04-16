@@ -5,7 +5,6 @@ import model.DBSource;
 import view.*;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -38,10 +37,17 @@ public class Controller implements ActionListener {
         collection = DBSource.getCollection(deckName);
         deckSize = collection.size();
         this.deckName = deckName;
-        ctrlButtonPanel.setCardIndexLabel(1, deckSize);
         ctrlButtonPanel.setCollectionName(deckName);
-        currentIndex = 1;
-        cardPanel.showCard(collection.get(currentIndex - 1));
+
+        if (deckSize > 0) {
+            ctrlButtonPanel.setCardIndexLabel(1, deckSize);
+            currentIndex = 1;
+            cardPanel.showCard(collection.get(currentIndex - 1));
+        } else {
+            ctrlButtonPanel.setCardIndexLabel(0, deckSize);
+            currentIndex = 0;
+            cardPanel.showCard(new Card());
+        }
     }
 
     private void prevCard() {
@@ -65,16 +71,23 @@ public class Controller implements ActionListener {
     }
 
     private void deleteCard() {
+        if (deckSize < 1)
+            return;
         DBSource.deleteCard(collection.get(currentIndex - 1), deckName);
         changeDeck(deckName);
     }
 
     private void newCard() {
-        //FormPanel formPanel = new FormPanel(new String[]{"Question", "Answer"});
-        AddCardDialog addCardDialog = new AddCardDialog(mainFrame);
-        addCardDialog.pack();
-        addCardDialog.setLocationRelativeTo(mainFrame);
-        addCardDialog.setVisible(true);
+        AddCardPanel addCardPanel = new AddCardPanel();
+        int result = JOptionPane.showConfirmDialog(mainFrame, addCardPanel, "New Card",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            DBSource.addCard(addCardPanel.getNewCard(), deckName);
+        }
+        changeDeck(deckName);
+        currentIndex = collection.size();
+        cardPanel.showCard(collection.get(currentIndex - 1));
+        ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
     }
 
     @Override
