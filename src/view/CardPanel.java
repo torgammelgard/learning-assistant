@@ -27,26 +27,15 @@ public class CardPanel extends JPanel {
         Border border1 = BorderFactory.createBevelBorder(BevelBorder.LOWERED);
         Border border2 = BorderFactory.createDashedBorder(Color.GREEN);
         setBorder(BorderFactory.createCompoundBorder(border2, border1));
-    }
-
-    public CardPanel(String question, String[] answers) {
-        this();
-        this.question = question;
-        this.answers = answers;
-        init();
-    }
-
-    public CardPanel(Card card) {
-        this();
-        this.question = card.getQuestion();
-        this.answers = card.getAnswerAlternatives();
+        questionLabel = new JLabel();
+        answerList = new JList<>();
+        listModel = new DefaultListModel<>();
         init();
     }
 
     private void init() {
-        questionLabel = new JLabel(question);
+        questionLabel.setText(question);
         questionLabel.setFont(new Font("Courier", Font.PLAIN, 18));
-        answerList = new JList<>();
         answerList.setCellRenderer(new ListCellRenderer<String>() {
             @Override
             public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -64,9 +53,10 @@ public class CardPanel extends JPanel {
                 return rowLabel;
             }
         });
-        listModel = new DefaultListModel<>();
-        for (String item : answers) {
-            listModel.addElement(item);
+        if (answers != null) {
+            for (String item : answers) {
+                listModel.addElement(item);
+            }
         }
 
         answerList.setModel(listModel);
@@ -94,6 +84,7 @@ public class CardPanel extends JPanel {
         for (String item : answers) {
             listModel.addElement(item);
         }
+
     }
 
     public void addAnswerRow() {

@@ -5,13 +5,16 @@ import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by torgammelgard on 2016-04-11.
@@ -55,6 +58,22 @@ public class DBSource {
         return updateResult.getModifiedCount() > 0;
     }
 
+    public static List<String> getCollectionNames() {
+        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
+
+        MongoIterable<String> collectionNames = db.listCollectionNames();
+
+        ArrayList<String> names = new ArrayList<>();
+
+        collectionNames.forEach(new Block<String>() {
+            @Override
+            public void apply(String s) {
+                names.add(s);
+            }
+        });
+        return names;
+    }
+
     public static List<Card> getCollection(String collectionName) {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
@@ -75,5 +94,19 @@ public class DBSource {
         });
 
         return cards;
+    }
+
+    public static void search(String searchString, String collectionName) {
+        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
+
+        FindIterable<Document> res = db.getCollection(collectionName).find(
+                new Document("question", Pattern.compile(searchString)));
+
+        res.forEach(new Block<Document>() {
+            @Override
+            public void apply(Document document) {
+                System.out.println(document);
+            }
+        });
     }
 }

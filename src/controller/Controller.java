@@ -24,12 +24,13 @@ public class Controller implements ActionListener {
 
     public Controller(MainFrame view) {
         mainFrame = view;
+        mainFrame.setController(this);
         ctrlButtonPanel = view.getCtrlButtonPanel();
         ctrlButtonPanel.connectToController(this);
 
         cardPanel = view.getCardPanel();
 
-        changeDeck("countries"); // remove this later
+        ctrlButtonPanel.setCollections(DBSource.getCollectionNames());
     }
 
     // TODO maybe batch sizes,
@@ -90,6 +91,7 @@ public class Controller implements ActionListener {
             ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
         }
     }
+
     private void editCard() {
         if (currentIndex == 0)
             return;
@@ -108,6 +110,14 @@ public class Controller implements ActionListener {
             ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
         }
     }
+
+    private void search() {
+        System.out.println("Searching for " + mainFrame.getSearchString());
+        String searchString = mainFrame.getSearchString();
+        if (!searchString.equals(""))
+            DBSource.search(searchString, deckName);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
@@ -123,8 +133,14 @@ public class Controller implements ActionListener {
             case CtrlButtonPanel.DELETE:
                 deleteCard();
                 break;
-            case CtrlButtonPanel.NEW:
+            case CtrlButtonPanel.ADD:
                 newCard();
+                break;
+            case CtrlButtonPanel.COLLECTION_NAMES:
+                changeDeck(ctrlButtonPanel.getSelectedCollection());
+                break;
+            case MainFrame.SEARCH:
+                search();
                 break;
             default:
                 break;

@@ -1,6 +1,6 @@
 package view;
 
-import model.Card;
+import controller.Controller;
 import model.DBSource;
 
 import javax.swing.*;
@@ -14,13 +14,19 @@ import java.awt.event.ActionListener;
  */
 public class MainFrame extends JFrame {
 
+    public static final String SEARCH = "Search";
+
     private CtrlButtonPanel ctrlButtonPanel;
     private CardPanel cardPanel;
+    private JTextField searchField;
+    private JButton searchButton;
 
     public MainFrame() throws HeadlessException {
         getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
 
-        cardPanel = new CardPanel("What is the capital of Sweden?", new String[]{"Stockholm", "Oslo", "Copenhagen", "Stockholm", "Oslo", "Copenhagen", "Stockholm", "Oslo", "Copenhagen", "Stockholm", "Oslo", "Copenhagen"});
+        createMenu();
+
+        cardPanel = new CardPanel();
         cardPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(Box.createVerticalGlue());
         add(cardPanel);
@@ -75,5 +81,31 @@ public class MainFrame extends JFrame {
             System.out.println(DBName);
         }
 
+    }
+
+
+    public void setController(Controller controller) {
+        searchButton.addActionListener(controller);
+    }
+
+    private void createMenu() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu arkiv = new JMenu("Arkiv");
+
+        JMenuItem menuItem = new JMenuItem("Exit");
+        arkiv.add(menuItem);
+        menuBar.add(arkiv);
+
+
+        searchField = new JTextField();
+        menuBar.add(searchField);
+        searchButton = new JButton("Search");
+        searchButton.setActionCommand(SEARCH);
+        menuBar.add(searchButton);
+        setJMenuBar(menuBar);
+    }
+
+    public String getSearchString() {
+        return searchField.getText();
     }
 }
