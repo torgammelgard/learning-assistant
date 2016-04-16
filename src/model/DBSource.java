@@ -1,10 +1,12 @@
 package model;
 
 import com.mongodb.Block;
+import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -42,6 +44,15 @@ public class DBSource {
 
         DeleteResult deleteResult = db.getCollection(collectionName).deleteOne(new Document("question", card.getQuestion()));
         return deleteResult.getDeletedCount() > 0;
+    }
+
+    public static boolean editCard(Card cardToEdit, Card editedCard, String collectionName) {
+        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
+
+        UpdateResult updateResult = db.getCollection(collectionName).updateOne(new Document("question", cardToEdit.getQuestion()),
+                new Document("$set", new Document("question", editedCard.getQuestion())
+                        .append("answerAlternatives", Arrays.asList(editedCard.getAnswerAlternatives()))));
+        return updateResult.getModifiedCount() > 0;
     }
 
     public static List<Card> getCollection(String collectionName) {

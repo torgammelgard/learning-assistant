@@ -71,4 +71,10 @@ public class FormPanel extends JPanel {
         }
         return inputs;
     }
+
+    public void setInputs(String[] inputs) {
+        for (int i = 0; i < inputs.length; i++) {
+            jTextFields.get(i).setText(inputs[i]);
+        }
+    }
 }

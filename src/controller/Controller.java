@@ -78,18 +78,36 @@ public class Controller implements ActionListener {
     }
 
     private void newCard() {
-        AddCardPanel addCardPanel = new AddCardPanel();
-        int result = JOptionPane.showConfirmDialog(mainFrame, addCardPanel, "New Card",
+        AddEditCardPanel addEditCardPanel = new AddEditCardPanel();
+        int result = JOptionPane.showConfirmDialog(mainFrame, addEditCardPanel, "New Card",
                 JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-            DBSource.addCard(addCardPanel.getNewCard(), deckName);
-        }
-        changeDeck(deckName);
-        currentIndex = collection.size();
-        cardPanel.showCard(collection.get(currentIndex - 1));
-        ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
-    }
+            DBSource.addCard(addEditCardPanel.getCard(), deckName);
 
+            changeDeck(deckName);
+            currentIndex = collection.size();
+            cardPanel.showCard(collection.get(currentIndex - 1));
+            ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
+        }
+    }
+    private void editCard() {
+        if (currentIndex == 0)
+            return;
+        int currentIndexBackup = currentIndex;
+        Card cardToEdit = collection.get(currentIndex - 1);
+        AddEditCardPanel addEditCardPanel = new AddEditCardPanel();
+        addEditCardPanel.setInputs(new String[]{cardToEdit.getQuestion(), cardToEdit.getAnswerAlternatives()[0]});
+        int result = JOptionPane.showConfirmDialog(mainFrame, addEditCardPanel, "Edit Card",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            DBSource.editCard(collection.get(currentIndex - 1), addEditCardPanel.getCard(), deckName);
+
+            changeDeck(deckName);
+            currentIndex = currentIndexBackup;
+            cardPanel.showCard(collection.get(currentIndex - 1));
+            ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
+        }
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
@@ -100,6 +118,7 @@ public class Controller implements ActionListener {
                 nextCard();
                 break;
             case CtrlButtonPanel.EDIT:
+                editCard();
                 break;
             case CtrlButtonPanel.DELETE:
                 deleteCard();
