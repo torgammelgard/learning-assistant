@@ -108,4 +108,8 @@ public class MainFrame extends JFrame {
     public String getSearchString() {
         return searchField.getText();
     }
+
+    public void clearSearch() {
+        searchField.setText("");
+    }
 }

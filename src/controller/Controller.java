@@ -98,8 +98,9 @@ public class Controller implements ActionListener {
         int currentIndexBackup = currentIndex;
         Card cardToEdit = collection.get(currentIndex - 1);
         AddEditCardPanel addEditCardPanel = new AddEditCardPanel();
-        addEditCardPanel.setInputs(new String[]{cardToEdit.getQuestion(), cardToEdit.getAnswerAlternatives()[0]});
-        int result = JOptionPane.showConfirmDialog(mainFrame, addEditCardPanel, "Edit Card",
+        addEditCardPanel.setInputs(cardToEdit);
+        JScrollPane scrollPane = new JScrollPane(addEditCardPanel);
+        int result = JOptionPane.showConfirmDialog(mainFrame, scrollPane, "Edit Card",
                 JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             DBSource.editCard(collection.get(currentIndex - 1), addEditCardPanel.getCard(), deckName);
@@ -112,10 +113,22 @@ public class Controller implements ActionListener {
     }
 
     private void search() {
-        System.out.println("Searching for " + mainFrame.getSearchString());
         String searchString = mainFrame.getSearchString();
-        if (!searchString.equals(""))
-            DBSource.search(searchString, deckName);
+        mainFrame.clearSearch();
+        if (!searchString.equals("")) {
+            collection = DBSource.search(searchString, deckName);
+            ctrlButtonPanel.setCollectionName(deckName + "[" + searchString + "]");
+            deckSize = collection.size();
+            if (deckSize > 0) {
+                currentIndex = 1;
+                cardPanel.showCard(collection.get(currentIndex - 1));
+            } else {
+                currentIndex = 0;
+                cardPanel.showCard(new Card());
+            }
+            ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
+        }
+
     }
 
     @Override

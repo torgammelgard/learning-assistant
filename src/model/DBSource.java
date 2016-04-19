@@ -1,7 +1,6 @@
 package model;
 
 import com.mongodb.Block;
-import com.mongodb.DB;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
@@ -12,7 +11,6 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -85,28 +83,35 @@ public class DBSource {
 
             @Override
             public void apply(Document document) {
-                Card card = new Card();
-                card.setQuestion((String) document.get("question"));
-                ArrayList<Object> ansAlts = (ArrayList<Object>) document.get("answerAlternatives");
-                card.setAnswerAlternatives(ansAlts.toArray(new String[]{}));
-                cards.add(card);
+                cards.add(DBSource.documentToCard(document));
             }
         });
 
         return cards;
     }
 
-    public static void search(String searchString, String collectionName) {
+    public static List<Card> search(String searchString, String collectionName) {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
         FindIterable<Document> res = db.getCollection(collectionName).find(
                 new Document("question", Pattern.compile(searchString)));
 
+        ArrayList<Card> cards = new ArrayList<>();
+
         res.forEach(new Block<Document>() {
             @Override
             public void apply(Document document) {
-                System.out.println(document);
+                cards.add(DBSource.documentToCard(document));
             }
         });
+        return cards;
+    }
+
+    private static Card documentToCard(Document document) {
+        Card card = new Card();
+        card.setQuestion((String) document.get("question"));
+        ArrayList<Object> ansAlts = (ArrayList<Object>) document.get("answerAlternatives");
+        card.setAnswerAlternatives(ansAlts.toArray(new String[]{}));
+        return card;
     }
 }
