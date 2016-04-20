@@ -80,7 +80,8 @@ public class Controller implements ActionListener {
 
     private void newCard() {
         AddEditCardPanel addEditCardPanel = new AddEditCardPanel();
-        int result = JOptionPane.showConfirmDialog(mainFrame, addEditCardPanel, "New Card",
+        JScrollPane scrollPane = new JScrollPane(addEditCardPanel);
+        int result = JOptionPane.showConfirmDialog(mainFrame, scrollPane, "New Card",
                 JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             DBSource.addCard(addEditCardPanel.getCard(), deckName);

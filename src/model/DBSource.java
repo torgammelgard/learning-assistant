@@ -2,6 +2,7 @@ package model;
 
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
@@ -37,7 +38,9 @@ public class DBSource {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
         db.getCollection(collectionName).insertOne(
-                new Document("question", card.getQuestion()).append("answerAlternatives", Arrays.asList(card.getAnswerAlternatives())));
+                new Document("question", card.getQuestion())
+                        .append("answerAlternatives", Arrays.asList(card.getAnswerAlternatives()))
+                        .append("priority", card.getPriority().ordinal()));
     }
 
     public static boolean deleteCard(Card card, String collectionName) {
@@ -52,7 +55,8 @@ public class DBSource {
 
         UpdateResult updateResult = db.getCollection(collectionName).updateOne(new Document("question", cardToEdit.getQuestion()),
                 new Document("$set", new Document("question", editedCard.getQuestion())
-                        .append("answerAlternatives", Arrays.asList(editedCard.getAnswerAlternatives()))));
+                        .append("answerAlternatives", Arrays.asList(editedCard.getAnswerAlternatives()))
+                        .append("priority", editedCard.getPriority().ordinal())));
         return updateResult.getModifiedCount() > 0;
     }
 
@@ -107,11 +111,32 @@ public class DBSource {
         return cards;
     }
 
+    public static void agg_search(String collectionName) {
+        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
+
+        AggregateIterable<Document> iterable = db.getCollection(collectionName).aggregate(
+                Arrays.asList(new Document("$group", new Document("_id", "$priority").append("count", new Document("$sum", 1))))
+        );
+
+        iterable.forEach(new Block<Document>() {
+            @Override
+            public void apply(Document document) {
+                System.out.println(document.toJson());
+            }
+        });
+    }
+
     private static Card documentToCard(Document document) {
         Card card = new Card();
-        card.setQuestion((String) document.get("question"));
+        card.setQuestion(document.getString("question"));
         ArrayList<Object> ansAlts = (ArrayList<Object>) document.get("answerAlternatives");
         card.setAnswerAlternatives(ansAlts.toArray(new String[]{}));
+        if (document.keySet().contains("priority")) {
+            int priority = document.getInteger("priority");
+            card.setPriority(Card.PRIORITY.values()[priority]);
+        } else {
+            card.setPriority(null);
+        }
         return card;
     }
 }
