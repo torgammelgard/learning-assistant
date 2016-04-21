@@ -22,6 +22,7 @@ public class CardPanel extends JPanel {
     private String question;
     private ArrayList<AnswerJTextField> answers;
     private JLabel questionLabel;
+    private JLabel priorityLabel;
     private JList<AnswerJTextField> answerList;
     private DefaultListModel<AnswerJTextField> listModel;
 
@@ -41,6 +42,9 @@ public class CardPanel extends JPanel {
         init();
     }
 
+    /**
+     * Initializes (some labels and JList)
+     */
     private void init() {
         questionLabel.setText(question);
         questionLabel.setFont(new Font("Courier", Font.PLAIN, 20));
@@ -73,8 +77,12 @@ public class CardPanel extends JPanel {
 
         add(box);
     }
-    private JLabel priorityLabel;
 
+    /**
+     * Shows a card by updating components
+     *
+     * @param card
+     */
     public void showCard(Card card) {
         question = card.getQuestion();
         ArrayList<String> answerAlternatives = new ArrayList<>(card.getAnswerAlternatives());

@@ -36,7 +36,11 @@ public class Controller implements ActionListener {
         ctrlButtonPanel.setCollections(DBSource.getCollectionNames());
     }
 
-    // TODO maybe batch sizes,
+    /**
+     * Changes the deck of cards (to another collection)
+     *
+     * @param deckName
+     */
     private void changeDeck(String deckName) {
         collection = DBSource.getCollection(deckName);
         deckSize = collection.size();
@@ -55,6 +59,9 @@ public class Controller implements ActionListener {
         statPanel.updateForCollection(deckName);
     }
 
+    /**
+     * Shows the previous card in the collection
+     */
     private void prevCard() {
         if (currentIndex > 1) {
             currentIndex--;
@@ -65,6 +72,9 @@ public class Controller implements ActionListener {
         ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
     }
 
+    /**
+     * Shows the next card in the collection
+     */
     private void nextCard() {
         if (currentIndex < deckSize) {
             currentIndex++;
@@ -75,6 +85,9 @@ public class Controller implements ActionListener {
         ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
     }
 
+    /**
+     * Deletes a card and updates panels
+     */
     private void deleteCard() {
         if (deckSize < 1)
             return;
@@ -83,6 +96,9 @@ public class Controller implements ActionListener {
         statPanel.updateForCollection(deckName);
     }
 
+    /**
+     * Adds a new card and updates panels
+     */
     private void newCard() {
         AddEditCardPanel addEditCardPanel = new AddEditCardPanel();
         JScrollPane scrollPane = new JScrollPane(addEditCardPanel);
@@ -99,6 +115,9 @@ public class Controller implements ActionListener {
         statPanel.updateForCollection(deckName);
     }
 
+    /**
+     * Updates card and updates panels
+     */
     private void editCard() {
         if (currentIndex == 0)
             return;
@@ -120,6 +139,9 @@ public class Controller implements ActionListener {
         statPanel.updateForCollection(deckName);
     }
 
+    /**
+     * Queries the database using a search string and a filter
+     */
     private void search() {
         String searchString = mainFrame.getSearchString();
         mainFrame.clearSearch();
@@ -141,6 +163,12 @@ public class Controller implements ActionListener {
 
     }
 
+    /**
+     * Helps with fixing the search string by trimming of brackets
+     *
+     * @param s
+     * @return
+     */
     private String fixSearchString(String s) {
         int start = s.indexOf("[");
         if (start > -1)
@@ -149,6 +177,12 @@ public class Controller implements ActionListener {
             return s;
     }
 
+    /**
+     * Finds the priority filter to be used in the search
+     *
+     * @param s
+     * @return a list of integers referring the which priorities that should be used
+     */
     private List<Integer> findPriorityFilter(String s) {
         List<Integer> priorityFilter = new ArrayList<>();
         int start = -1;

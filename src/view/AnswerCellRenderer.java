@@ -12,6 +12,16 @@ public class AnswerCellRenderer extends JLabel implements ListCellRenderer {
         setFont(new Font("Garamond", Font.PLAIN, 18));
     }
 
+    /**
+     * A custom component to be used as a cell in a JList
+     *
+     * @param list
+     * @param value
+     * @param index
+     * @param isSelected
+     * @param cellHasFocus
+     * @return
+     */
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 

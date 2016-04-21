@@ -52,11 +52,27 @@ public class StatPanel extends JPanel {
         setPreferredSize(new Dimension(150, 150)); // only the height will be used in this layout
     }
 
+    /**
+     * Sets the label referring to 'Total'
+     *
+     * @param total
+     */
     public void setTotalLabelText(String total) {
         totalLabel.setText(total);
     }
 
+    /**
+     * Sets the label referring to 'Info'
+     *
+     * @param info
+     */
     public void setPriorityInfoLabel(String info) {priorityInfoLabel.setText(info);}
+
+    /**
+     * Updates the StatPanel for a certain collection
+     *
+     * @param collection
+     */
     public void updateForCollection(String collection) {
         Map<String, Integer> stats = DBSource.getStats(collection);
 

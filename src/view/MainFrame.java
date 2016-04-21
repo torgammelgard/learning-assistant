@@ -81,6 +81,9 @@ public class MainFrame extends JFrame {
         return cardPanel;
     }
 
+    /**
+     * A test function for the database connection
+     */
     private void testDB() {
 
         // Test mongodb driver by printing all database names
@@ -91,10 +94,18 @@ public class MainFrame extends JFrame {
     }
 
 
+    /**
+     * Sets the controller (just a searchButton for now)
+     *
+     * @param controller
+     */
     public void setController(Controller controller) {
         searchButton.addActionListener(controller);
     }
 
+    /**
+     * Creates the menu (really just the search field and search button)
+     */
     private void createMenu() {
         JMenuBar menuBar = new JMenuBar();
 
@@ -106,10 +117,17 @@ public class MainFrame extends JFrame {
         setJMenuBar(menuBar);
     }
 
+    /**
+     *
+     * @return search string
+     */
     public String getSearchString() {
         return searchField.getText();
     }
 
+    /**
+     * Clears the search field
+     */
     public void clearSearch() {
         searchField.setText("");
     }

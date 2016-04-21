@@ -24,14 +24,27 @@ public class DBSource {
     private DBSource() {
     }
 
+    /**
+     *
+     * @return the mongo client
+     */
     public static MongoClient getMongoClient() {
         return mongoClient;
     }
 
+    /**
+     * Closes the mongo client
+     */
     public static void closeMongoClient() {
         mongoClient.close();
     }
 
+    /**
+     * Adds a card
+     *
+     * @param card
+     * @param collectionName
+     */
     public static void addCard(Card card, String collectionName) {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
@@ -41,6 +54,13 @@ public class DBSource {
                         .append("priority", card.getPriority().ordinal()));
     }
 
+    /**
+     * Deletes a card
+     *
+     * @param card
+     * @param collectionName
+     * @return true if a card was deleted
+     */
     public static boolean deleteCard(Card card, String collectionName) {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
@@ -48,6 +68,14 @@ public class DBSource {
         return deleteResult.getDeletedCount() > 0;
     }
 
+    /**
+     * Updates a card
+     *
+     * @param cardToEdit
+     * @param editedCard
+     * @param collectionName
+     * @return true if update was successful
+     */
     public static boolean editCard(Card cardToEdit, Card editedCard, String collectionName) {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
@@ -58,6 +86,10 @@ public class DBSource {
         return updateResult.getModifiedCount() > 0;
     }
 
+    /**
+     *
+     * @return a list of collection names
+     */
     public static List<String> getCollectionNames() {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
@@ -74,6 +106,12 @@ public class DBSource {
         return names;
     }
 
+    /**
+     * Creates a list of cards from a collection
+     *
+     * @param collectionName
+     * @return
+     */
     public static List<Card> getCollection(String collectionName) {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
@@ -92,6 +130,14 @@ public class DBSource {
         return cards;
     }
 
+    /**
+     * Queries the collection using a search string and a filter
+     *
+     * @param searchString
+     * @param priorityFilter
+     * @param collectionName
+     * @return
+     */
     public static List<Card> search(String searchString, List<Integer> priorityFilter, String collectionName) {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
@@ -111,6 +157,12 @@ public class DBSource {
         return cards;
     }
 
+    /**
+     * Queries the collection for information
+     *
+     * @param collectionName
+     * @return
+     */
     public static Map<String, Integer> getStats(String collectionName) {
         HashMap<String, Integer> map = new HashMap<>();
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
@@ -137,6 +189,12 @@ public class DBSource {
         return map;
     }
 
+    /**
+     * Creates a Card from a Document
+     *
+     * @param document
+     * @return
+     */
     private static Card documentToCard(Document document) {
         Card card = new Card();
         card.setQuestion(document.getString("question"));

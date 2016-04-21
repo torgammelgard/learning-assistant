@@ -64,6 +64,11 @@ public class AddEditCardPanel extends JPanel {
         add(addAnswerButton, c);
     }
 
+    /**
+     * Adds a row (answer alternatives)
+     *
+     * @param labelText
+     */
     private void addRowPanel(String labelText) {
         rowPanels.add(new RowPanel(labelText));
         GridBagConstraints c = new GridBagConstraints();
@@ -86,6 +91,9 @@ public class AddEditCardPanel extends JPanel {
         repaint();
     }
 
+    /**
+     * Deletes a row (answer)
+     */
     private void deleteAnswerField() {
         if (rowPanels.size() > 2) {
             remove(rowPanels.get(rowPanels.size() - 1));
@@ -96,6 +104,11 @@ public class AddEditCardPanel extends JPanel {
         }
     }
 
+    /**
+     * Creates a card from the field inputs
+     *
+     * @return the new card
+     */
     public Card getCard() {
         String question = rowPanels.get(0).getInput();
         String[] answers = getInputs();
@@ -106,6 +119,11 @@ public class AddEditCardPanel extends JPanel {
         return newCard;
     }
 
+    /**
+     * Helper function for getting field values
+     *
+     * @return an array of the input field values
+     */
     private String[] getInputs() {
         // get all answers (the first is the question so this is not included)
         String[] inputs = new String[rowPanels.size() - 1];
@@ -115,6 +133,11 @@ public class AddEditCardPanel extends JPanel {
         return inputs;
     }
 
+    /**
+     * Sets all the input fields from card info
+     *
+     * @param cardToEdit
+     */
     public void setInputs(Card cardToEdit) {
         rowPanels.get(0).setInput(cardToEdit.getQuestion());
         priorityPanel.setSelectedPriority(cardToEdit.getPriority());
@@ -132,6 +155,9 @@ public class AddEditCardPanel extends JPanel {
         }
     }
 
+    /**
+     * A row panel
+     */
     class RowPanel extends JPanel {
 
         private JLabel label;
@@ -171,7 +197,9 @@ public class AddEditCardPanel extends JPanel {
     }
 
 
-
+    /**
+     * A panel for showing priorities
+     */
     class PriorityPanel extends JPanel {
 
         private ButtonGroup bg;
