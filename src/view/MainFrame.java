@@ -14,6 +14,9 @@ import java.awt.event.ActionListener;
  */
 public class MainFrame extends JFrame {
 
+    public static final Color BACKGROUND_COLOR = new Color(0x9CFFF8);
+    public static final Color BACKGROUND_COLOR2 = new Color(0x89E9FF);
+
     public static final String SEARCH = "Search";
 
     private CtrlButtonPanel ctrlButtonPanel;
@@ -24,7 +27,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame() throws HeadlessException {
         getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
-
+        getContentPane().setBackground(BACKGROUND_COLOR2);
         createMenu();
 
         cardPanel = new CardPanel();
@@ -95,12 +98,6 @@ public class MainFrame extends JFrame {
 
     private void createMenu() {
         JMenuBar menuBar = new JMenuBar();
-        JMenu arkiv = new JMenu("Arkiv");
-
-        JMenuItem menuItem = new JMenuItem("Exit");
-        arkiv.add(menuItem);
-        menuBar.add(arkiv);
-
 
         searchField = new JTextField();
         menuBar.add(searchField);

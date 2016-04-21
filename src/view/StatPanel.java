@@ -16,6 +16,8 @@ public class StatPanel extends JPanel {
         avgLabel = new JLabel();
         totalLabel = new JLabel();
 
+        setBackground(MainFrame.BACKGROUND_COLOR);
+
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
@@ -25,7 +27,6 @@ public class StatPanel extends JPanel {
         c.gridy = 0;
         c.gridwidth = 2;
         JLabel title = new JLabel("Statistics");
-        title.setBorder(BorderFactory.createDashedBorder(Color.RED));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setFont(new Font("Garamond", Font.PLAIN, 24));
         add(title, c);
@@ -45,14 +46,12 @@ public class StatPanel extends JPanel {
         c.gridy++;
         JLabel l2 = new JLabel("Total : ");
         l2.setHorizontalAlignment(SwingConstants.RIGHT);
-        l2.setBorder(BorderFactory.createDashedBorder(Color.BLUE));
         add(l2, c);
 
         c.gridx = 1;
         add(totalLabel, c);
 
         setOpaque(true);
-        setBackground(Color.GRAY);
         setPreferredSize(new Dimension(150, 150)); // only the height will be used in this layout
     }
 

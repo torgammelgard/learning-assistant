@@ -24,6 +24,7 @@ public class CardPanel extends JPanel {
     private DefaultListModel<String> listModel;
 
     public CardPanel() {
+        setBackground(MainFrame.BACKGROUND_COLOR);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setMaximumSize(new Dimension(WIDTH, HEIGHT));
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));

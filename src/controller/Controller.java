@@ -143,7 +143,10 @@ public class Controller implements ActionListener {
 
     private String fixSearchString(String s) {
         int start = s.indexOf("[");
-        return s.substring(0, start);
+        if (start > -1)
+            return s.substring(0, start);
+        else
+            return s;
     }
 
     private List<Integer> findPriorityFilter(String s) {
@@ -175,6 +178,11 @@ public class Controller implements ActionListener {
                         break;
                 }
             }
+        } else if (start == -1) {
+            // if there wasn't a [...] in the search string we search for all priorities
+            priorityFilter.add(0);
+            priorityFilter.add(1);
+            priorityFilter.add(2);
         }
 
         return priorityFilter;
