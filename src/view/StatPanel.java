@@ -10,10 +10,9 @@ import java.util.Map;
  * Created by torgammelgard on 2016-04-20.
  */
 public class StatPanel extends JPanel {
-    private JLabel avgLabel, totalLabel;
+    private JLabel totalLabel;
 
     public StatPanel() {
-        avgLabel = new JLabel();
         totalLabel = new JLabel();
 
         setBackground(MainFrame.BACKGROUND_COLOR);
@@ -33,16 +32,6 @@ public class StatPanel extends JPanel {
 
         c.gridwidth = 1;
         c.gridx = 0;
-        c.gridy = 1;
-
-        JLabel l1 = new JLabel("Average : ");
-        l1.setHorizontalAlignment(SwingConstants.RIGHT);
-        add(l1, c);
-
-        c.gridx = 1;
-        add(avgLabel, c);
-
-        c.gridx = 0;
         c.gridy++;
         JLabel l2 = new JLabel("Total : ");
         l2.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -55,9 +44,6 @@ public class StatPanel extends JPanel {
         setPreferredSize(new Dimension(150, 150)); // only the height will be used in this layout
     }
 
-    public void setAvgLabelText(String avg) {
-        avgLabel.setText(avg);
-    }
     public void setTotalLabelText(String total) {
         totalLabel.setText(total);
     }

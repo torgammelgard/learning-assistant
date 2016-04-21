@@ -37,11 +37,11 @@ public class CtrlButtonPanel extends JPanel {
         cardIndexLabel = new JLabel("- / -");
         add(cardIndexLabel);
 
-        forwardBtn = new JButton(FORWARD);
-        backwardBtn = new JButton(BACKWARD);
-        editBtn = new JButton(EDIT);
-        deleteBtn = new JButton(DELETE);
-        newBtn = new JButton(ADD);
+        forwardBtn = new BetterButton(FORWARD);
+        backwardBtn = new BetterButton(BACKWARD);
+        editBtn = new BetterButton(EDIT);
+        deleteBtn = new BetterButton(DELETE);
+        newBtn = new BetterButton(ADD);
 
         add(deleteBtn);
         add(editBtn);

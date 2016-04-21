@@ -71,6 +71,9 @@ public class CardPanel extends JPanel {
         JPanel p = new JPanel(new FlowLayout());
         p.add(questionLabel);
 
+        priorityLabel.setBorder(BorderFactory.createDashedBorder(Color.RED));
+        priorityLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         box.add(priorityLabel);
         box.add(p);
         box.add(Box.createVerticalGlue());

@@ -23,7 +23,7 @@ public class MainFrame extends JFrame {
     private StatPanel statPanel;
     private CardPanel cardPanel;
     private JTextField searchField;
-    private JButton searchButton;
+    private BetterButton searchButton;
 
     public MainFrame() throws HeadlessException {
         getContentPane().setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
@@ -101,7 +101,7 @@ public class MainFrame extends JFrame {
 
         searchField = new JTextField();
         menuBar.add(searchField);
-        searchButton = new JButton("Search");
+        searchButton = new BetterButton(SEARCH);
         searchButton.setActionCommand(SEARCH);
         menuBar.add(searchButton);
         setJMenuBar(menuBar);
