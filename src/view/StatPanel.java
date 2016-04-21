@@ -11,9 +11,11 @@ import java.util.Map;
  */
 public class StatPanel extends JPanel {
     private JLabel totalLabel;
+    private JLabel priorityInfoLabel;
 
     public StatPanel() {
         totalLabel = new JLabel();
+        priorityInfoLabel = new JLabel();
 
         setBackground(MainFrame.BACKGROUND_COLOR);
 
@@ -40,6 +42,12 @@ public class StatPanel extends JPanel {
         c.gridx = 1;
         add(totalLabel, c);
 
+        c.gridwidth = 2;
+        c.gridx = 0;
+        c.gridy++;
+        priorityInfoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        add(priorityInfoLabel, c);
+
         setOpaque(true);
         setPreferredSize(new Dimension(150, 150)); // only the height will be used in this layout
     }
@@ -48,16 +56,20 @@ public class StatPanel extends JPanel {
         totalLabel.setText(total);
     }
 
+    public void setPriorityInfoLabel(String info) {priorityInfoLabel.setText(info);}
     public void updateForCollection(String collection) {
         Map<String, Integer> stats = DBSource.getStats(collection);
 
         int total = 0;
 
+        StringBuilder sb = new StringBuilder();
+
         for (String key : stats.keySet()) {
-            System.out.println("Number of " + key + " is " + stats.get(key));
+            sb.append(key == null ? "Priority not set" : key).append(" : ").append(stats.get(key)).append(", ");
             total += stats.get(key);
         }
 
+        setPriorityInfoLabel(sb.toString());
         setTotalLabelText(String.valueOf(total));
     }
 }
