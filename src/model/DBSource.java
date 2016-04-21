@@ -8,7 +8,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import com.sun.javadoc.Doc;
 import org.bson.Document;
 
 import java.util.*;
@@ -38,7 +37,7 @@ public class DBSource {
 
         db.getCollection(collectionName).insertOne(
                 new Document("question", card.getQuestion())
-                        .append("answerAlternatives", Arrays.asList(card.getAnswerAlternatives()))
+                        .append("answerAlternatives", Arrays.asList(card.getAnswerAlternatives().toArray()))
                         .append("priority", card.getPriority().ordinal()));
     }
 
@@ -54,7 +53,7 @@ public class DBSource {
 
         UpdateResult updateResult = db.getCollection(collectionName).updateOne(new Document("question", cardToEdit.getQuestion()),
                 new Document("$set", new Document("question", editedCard.getQuestion())
-                        .append("answerAlternatives", Arrays.asList(editedCard.getAnswerAlternatives()))
+                        .append("answerAlternatives", Arrays.asList(editedCard.getAnswerAlternatives().toArray()))
                         .append("priority", editedCard.getPriority().ordinal())));
         return updateResult.getModifiedCount() > 0;
     }
@@ -112,21 +111,6 @@ public class DBSource {
         return cards;
     }
 
-    public static void agg_search(String collectionName) {
-        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
-
-        AggregateIterable<Document> iterable = db.getCollection(collectionName).aggregate(
-                Arrays.asList(new Document("$group", new Document("_id", "$priority").append("count", new Document("$sum", 1))))
-        );
-
-        iterable.forEach(new Block<Document>() {
-            @Override
-            public void apply(Document document) {
-                System.out.println(document.toJson());
-            }
-        });
-    }
-
     public static Map<String, Integer> getStats(String collectionName) {
         HashMap<String, Integer> map = new HashMap<>();
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
@@ -156,8 +140,14 @@ public class DBSource {
     private static Card documentToCard(Document document) {
         Card card = new Card();
         card.setQuestion(document.getString("question"));
-        ArrayList<Object> ansAlts = (ArrayList<Object>) document.get("answerAlternatives");
-        card.setAnswerAlternatives(ansAlts.toArray(new String[]{}));
+        List ansAlts = (ArrayList) document.get("answerAlternatives");
+        ArrayList<String> strings = new ArrayList<>();
+        for (Object o : ansAlts) {
+            if (o instanceof String) {
+                strings.add((String) o);
+            }
+        }
+        card.setAnswerAlternatives(strings.toArray(new String[]{}));
         if (document.keySet().contains("priority")) {
             int priority = document.getInteger("priority");
             card.setPriority(Card.PRIORITY.values()[priority]);

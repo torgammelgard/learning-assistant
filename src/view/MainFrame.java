@@ -45,7 +45,6 @@ public class MainFrame extends JFrame {
         testButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DBSource.agg_search("countries");
                 DBSource.getStats("countries");
             }
         });

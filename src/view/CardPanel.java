@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by torgammelgard on 2016-04-12.
@@ -18,10 +20,10 @@ public class CardPanel extends JPanel {
     private final static String PRIORITY_LABEL_TEXT = "Priority ";
 
     private String question;
-    private String[] answers;
+    private ArrayList<AnswerJTextField> answers;
     private JLabel questionLabel;
-    private JList<String> answerList;
-    private DefaultListModel<String> listModel;
+    private JList<AnswerJTextField> answerList;
+    private DefaultListModel<AnswerJTextField> listModel;
 
     public CardPanel() {
         setBackground(MainFrame.BACKGROUND_COLOR);
@@ -35,35 +37,22 @@ public class CardPanel extends JPanel {
         priorityLabel = new JLabel();
         answerList = new JList<>();
         listModel = new DefaultListModel<>();
+        answers = new ArrayList<>();
         init();
     }
 
     private void init() {
         questionLabel.setText(question);
         questionLabel.setFont(new Font("Courier", Font.PLAIN, 20));
-        answerList.setCellRenderer(new ListCellRenderer<String>() {
-            @Override
-            public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
-                JLabel rowLabel = new JLabel();
-                rowLabel.setOpaque(true);
-                if (isSelected)
-                    rowLabel.setBackground(Color.LIGHT_GRAY);
-                else
-                    rowLabel.setBackground(Color.WHITE);
 
-                rowLabel.setFont(new Font("Courier", Font.PLAIN, 15));
-                rowLabel.setPreferredSize(new Dimension(WIDTH * 3/4, 30));
-                rowLabel.setText(value);
-                return rowLabel;
-            }
-        });
         if (answers != null) {
-            for (String item : answers) {
-                listModel.addElement(item);
+            for (AnswerJTextField a : answers) {
+                listModel.addElement(a);
             }
         }
 
         answerList.setModel(listModel);
+        answerList.setCellRenderer(new AnswerCellRenderer());
 
         Box box = Box.createVerticalBox();
         box.add(Box.createVerticalStrut(25));
@@ -88,7 +77,20 @@ public class CardPanel extends JPanel {
 
     public void showCard(Card card) {
         question = card.getQuestion();
-        answers = card.getAnswerAlternatives();
+        ArrayList<String> answerAlternatives = new ArrayList<>(card.getAnswerAlternatives());
+        answers.clear();
+        int c = 0;
+        AnswerJTextField ans;
+        for (String s : answerAlternatives) {
+            ans = new AnswerJTextField(s);
+            if (c++ == 0)
+                ans.setCorrect(true);
+            answers.add(ans);
+        }
+
+        // randomize the order of the answers
+        Collections.shuffle(answers);
+
         if (card.getPriority() != null) {
             priorityLabel.setText(PRIORITY_LABEL_TEXT + card.getPriority().toString());
         } else {
@@ -99,8 +101,8 @@ public class CardPanel extends JPanel {
         listModel.clear();
         if (answers == null)
             return;
-        for (String item : answers) {
-            listModel.addElement(item);
+        for (AnswerJTextField a : answers) {
+            listModel.addElement(a);
         }
     }
 

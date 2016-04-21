@@ -1,5 +1,8 @@
 package model;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by torgammelgard on 2016-04-12.
  */
@@ -10,6 +13,11 @@ public class Card {
     private String[] answerAlternatives;
 
     private PRIORITY priority;
+
+    public Card() {
+        question = "";
+        answerAlternatives = new String[1];
+    }
 
     public PRIORITY getPriority() {
         return priority;
@@ -27,8 +35,8 @@ public class Card {
         this.question = question;
     }
 
-    public String[] getAnswerAlternatives() {
-        return answerAlternatives;
+    public List<String> getAnswerAlternatives() {
+        return Arrays.asList(answerAlternatives);
     }
 
     public void setAnswerAlternatives(String[] answerAlternatives) {

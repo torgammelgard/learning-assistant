@@ -5,13 +5,13 @@ import model.Card;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by torgammelgard on 2016-04-15.
  */
 public class AddEditCardPanel extends JPanel {
 
-    private final int INPUTFIELD_LENGTH = 30;
     private Font font = new Font("Garamond", Font.PLAIN, 18);
 
     private Card newCard;
@@ -120,13 +120,15 @@ public class AddEditCardPanel extends JPanel {
         priorityPanel.setSelectedPriority(cardToEdit.getPriority());
 
         // one answer row is already present, so start at index 1
-        for (int i = 1; i < cardToEdit.getAnswerAlternatives().length; i++) {
+        for (int i = 1; i < cardToEdit.getAnswerAlternatives().size(); i++) {
             addRowPanel("Answer " + String.valueOf(numAnswers++));
         }
 
         // fill the answer alternatives
         for (int i = 1; i < rowPanels.size(); i++) {
-            rowPanels.get(i).setInput(cardToEdit.getAnswerAlternatives()[i - 1]);
+            List<String> l = cardToEdit.getAnswerAlternatives();
+            if (l.size() > 0)
+                rowPanels.get(i).setInput(l.get(i - 1));
         }
     }
 
@@ -168,23 +170,7 @@ public class AddEditCardPanel extends JPanel {
         }
     }
 
-    class AnswerJTextField extends JTextField {
 
-        private boolean isCorrect;
-
-        public AnswerJTextField() {
-            super(INPUTFIELD_LENGTH);
-            isCorrect = false;
-        }
-
-        public void setCorrect() {
-            isCorrect = true;
-        }
-
-        public boolean isCorrect() {
-            return isCorrect;
-        }
-    }
 
     class PriorityPanel extends JPanel {
 
