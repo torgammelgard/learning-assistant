@@ -17,6 +17,7 @@ public class MainFrame extends JFrame {
     public static final String SEARCH = "Search";
 
     private CtrlButtonPanel ctrlButtonPanel;
+    private StatPanel statPanel;
     private CardPanel cardPanel;
     private JTextField searchField;
     private JButton searchButton;
@@ -42,12 +43,14 @@ public class MainFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DBSource.agg_search("countries");
+                DBSource.getStats("countries");
             }
         });
+
+        statPanel = new StatPanel();
+        add(statPanel);
+
         add(testButton);
-
-
-        testDB();
 
 
         setPreferredSize(new Dimension(800, 600));
@@ -69,6 +72,8 @@ public class MainFrame extends JFrame {
     public CtrlButtonPanel getCtrlButtonPanel() {
         return ctrlButtonPanel;
     }
+
+    public StatPanel getStatPanel() { return statPanel;}
 
     public CardPanel getCardPanel() {
         return cardPanel;

@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * Created by torgammelgard on 2016-04-12.
@@ -15,6 +14,9 @@ public class CardPanel extends JPanel {
 
     private final static int WIDTH = 600;
     private final static int HEIGHT = 400;
+
+    private final static String PRIORITY_LABEL_TEXT = "Priority ";
+
     private String question;
     private String[] answers;
     private JLabel questionLabel;
@@ -49,7 +51,6 @@ public class CardPanel extends JPanel {
                     rowLabel.setBackground(Color.WHITE);
 
                 rowLabel.setFont(new Font("Courier", Font.PLAIN, 15));
-                rowLabel.setBorder(BorderFactory.createDashedBorder(Color.RED, 2, 3, 1, false));
                 rowLabel.setPreferredSize(new Dimension(WIDTH * 3/4, 30));
                 rowLabel.setText(value);
                 return rowLabel;
@@ -68,27 +69,7 @@ public class CardPanel extends JPanel {
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         JPanel p = new JPanel(new FlowLayout());
         p.add(questionLabel);
-        // create priority radio buttons
-        /*JRadioButton rb1 = new JRadioButton(Card.PRIORITY.LOW.toString());
-        rb1.setActionCommand(Card.PRIORITY.LOW.toString());
-        rb1.setSelected(false);
-        p.add(rb1);
 
-        JRadioButton rb2 = new JRadioButton(Card.PRIORITY.MEDIUM.toString());
-        rb2.setActionCommand(Card.PRIORITY.MEDIUM.toString());
-        rb2.setSelected(true);
-        p.add(rb2);
-
-        JRadioButton rb3 = new JRadioButton(Card.PRIORITY.HIGH.toString());
-        rb3.setActionCommand(Card.PRIORITY.HIGH.toString());
-        rb3.setSelected(false);
-        p.add(rb3);
-
-        ButtonGroup bg = new ButtonGroup();
-        bg.add(rb1);
-        bg.add(rb2);
-        bg.add(rb3);
-*/
         box.add(priorityLabel);
         box.add(p);
         box.add(Box.createVerticalGlue());
@@ -105,7 +86,7 @@ public class CardPanel extends JPanel {
         question = card.getQuestion();
         answers = card.getAnswerAlternatives();
         if (card.getPriority() != null) {
-            priorityLabel.setText(card.getPriority().toString());
+            priorityLabel.setText(PRIORITY_LABEL_TEXT + card.getPriority().toString());
         } else {
             priorityLabel.setText("");
         }

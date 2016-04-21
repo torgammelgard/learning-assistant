@@ -7,6 +7,7 @@ import view.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,12 +22,14 @@ public class Controller implements ActionListener {
     private CtrlButtonPanel ctrlButtonPanel;
     private CardPanel cardPanel;
     private MainFrame mainFrame;
+    private StatPanel statPanel;
 
     public Controller(MainFrame view) {
         mainFrame = view;
         mainFrame.setController(this);
         ctrlButtonPanel = view.getCtrlButtonPanel();
         ctrlButtonPanel.connectToController(this);
+        statPanel = view.getStatPanel();
 
         cardPanel = view.getCardPanel();
 
@@ -49,6 +52,7 @@ public class Controller implements ActionListener {
             currentIndex = 0;
             cardPanel.showCard(new Card());
         }
+        statPanel.updateForCollection(deckName);
     }
 
     private void prevCard() {
@@ -76,6 +80,7 @@ public class Controller implements ActionListener {
             return;
         DBSource.deleteCard(collection.get(currentIndex - 1), deckName);
         changeDeck(deckName);
+        statPanel.updateForCollection(deckName);
     }
 
     private void newCard() {
@@ -91,6 +96,7 @@ public class Controller implements ActionListener {
             cardPanel.showCard(collection.get(currentIndex - 1));
             ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
         }
+        statPanel.updateForCollection(deckName);
     }
 
     private void editCard() {
@@ -111,13 +117,16 @@ public class Controller implements ActionListener {
             cardPanel.showCard(collection.get(currentIndex - 1));
             ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
         }
+        statPanel.updateForCollection(deckName);
     }
 
     private void search() {
         String searchString = mainFrame.getSearchString();
         mainFrame.clearSearch();
         if (!searchString.equals("")) {
-            collection = DBSource.search(searchString, deckName);
+            List<Integer> filter = findPriorityFilter(searchString);
+            searchString = fixSearchString(searchString);
+            collection = DBSource.search(searchString, filter, deckName);
             ctrlButtonPanel.setCollectionName(deckName + "[" + searchString + "]");
             deckSize = collection.size();
             if (deckSize > 0) {
@@ -130,6 +139,45 @@ public class Controller implements ActionListener {
             ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
         }
 
+    }
+
+    private String fixSearchString(String s) {
+        int start = s.indexOf("[");
+        return s.substring(0, start);
+    }
+
+    private List<Integer> findPriorityFilter(String s) {
+        List<Integer> priorityFilter = new ArrayList<>();
+        int start = -1;
+        int end = -1;
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == ('['))
+                start = i;
+            else if (chars[i] == (']'))
+                end = i;
+        }
+        if (start > -1 && end > -1) {
+            String sub = s.substring(start + 1, end);
+            String[] prioStrArr = sub.split(",");
+            for (String prioStr : prioStrArr) {
+                switch (prioStr.trim()) {
+                    case "LOW":
+                        priorityFilter.add(Card.PRIORITY.LOW.ordinal());
+                        break;
+                    case "MEDIUM":
+                        priorityFilter.add(Card.PRIORITY.MEDIUM.ordinal());
+                        break;
+                    case "HIGH":
+                        priorityFilter.add(Card.PRIORITY.HIGH.ordinal());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return priorityFilter;
     }
 
     @Override

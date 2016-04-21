@@ -8,11 +8,10 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import com.sun.javadoc.Doc;
 import org.bson.Document;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -94,15 +93,17 @@ public class DBSource {
         return cards;
     }
 
-    public static List<Card> search(String searchString, String collectionName) {
+    public static List<Card> search(String searchString, List<Integer> priorityFilter, String collectionName) {
         MongoDatabase db = mongoClient.getDatabase(DB_NAME);
 
-        FindIterable<Document> res = db.getCollection(collectionName).find(
-                new Document("question", Pattern.compile(searchString)));
+        AggregateIterable<Document> iterable = db.getCollection(collectionName).aggregate(
+                Arrays.asList(new Document("$match", new Document("question", Pattern.compile(searchString))
+                        .append("priority", new Document("$in", Arrays.asList(priorityFilter.toArray()))))));
+
 
         ArrayList<Card> cards = new ArrayList<>();
 
-        res.forEach(new Block<Document>() {
+        iterable.forEach(new Block<Document>() {
             @Override
             public void apply(Document document) {
                 cards.add(DBSource.documentToCard(document));
@@ -124,6 +125,32 @@ public class DBSource {
                 System.out.println(document.toJson());
             }
         });
+    }
+
+    public static Map<String, Integer> getStats(String collectionName) {
+        HashMap<String, Integer> map = new HashMap<>();
+        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
+
+        AggregateIterable<Document> iterable = db.getCollection(collectionName).aggregate(
+                Arrays.asList(new Document("$group", new Document("_id", "$priority").append("count", new Document("$sum", 1))))
+        );
+
+        iterable.forEach(new Block<Document>() {
+            @Override
+            public void apply(Document document) {
+                // the id will be equal to the Card.PRIORITY ordinals
+                if (document.getInteger("_id") != null) {
+                    Integer i = document.getInteger("_id");
+                    map.put(Card.PRIORITY.values()[i].toString(), document.getInteger("count"));
+                } else {
+                    map.put(null, document.getInteger("count"));
+                }
+            }
+        });
+
+        System.out.println(map);
+
+        return map;
     }
 
     private static Card documentToCard(Document document) {
