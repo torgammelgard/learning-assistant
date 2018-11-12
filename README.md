@@ -8,3 +8,11 @@ This assistant offers the user to,
 - show cards
 - statistical information about the user's progress
 - ...
+
+
+mkdir -p data/db
+mongod --dbpath data/db
+
+
+use learning_assistant
+db.createCollection("test")
