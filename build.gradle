@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+dependencies {
+    
+    compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.9.0'
+
+    testImplementation 'junit:junit:4.12'
+}
+
+repositories {
+    jcenter()
+}
