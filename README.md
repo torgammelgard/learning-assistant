@@ -1,4 +1,4 @@
-# learning_assistant
+# Learning Assistant
 A database project (MongoDB) for a school assignment.
 
 This assistant offers the user to, 
@@ -8,4 +8,3 @@ This assistant offers the user to,
 - show cards
 - statistical information about the user's progress
 - ...
-
