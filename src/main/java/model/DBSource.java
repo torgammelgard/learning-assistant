@@ -2,6 +2,7 @@ package model;
 
 import com.mongodb.Block;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
@@ -19,7 +20,8 @@ import java.util.regex.Pattern;
 public class DBSource {
 
     private static final String DB_NAME = "learning_assistant";
-    private static final MongoClient mongoClient = new MongoClient();
+    private static final MongoClientURI mongoClientURI = new MongoClientURI("mongodb://root:example@127.0.0.1:27017");
+    private static final MongoClient mongoClient = new MongoClient(mongoClientURI);
 
     private DBSource() {
     }

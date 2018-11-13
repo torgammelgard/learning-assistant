@@ -34,6 +34,9 @@ public class Controller implements ActionListener {
         cardPanel = view.getCardPanel();
 
         ctrlButtonPanel.setCollections(DBSource.getCollectionNames());
+        deckName = ctrlButtonPanel.getSelectedCollection();
+        collection = DBSource.getCollection(deckName);
+
     }
 
     /**
@@ -241,7 +244,8 @@ public class Controller implements ActionListener {
                 newCard();
                 break;
             case CtrlButtonPanel.COLLECTION_NAMES:
-                changeDeck(ctrlButtonPanel.getSelectedCollection());
+                String collection = ctrlButtonPanel.getSelectedCollection();
+                changeDeck(collection);
                 break;
             case MainFrame.SEARCH:
                 search();
