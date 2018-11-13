@@ -2,7 +2,6 @@ version: '3'
 services:
   mongo-seed:
     container_name: "mongo-seed"
-    restart: always
     build: ./mongo-seed
     links:
       - mongo-db

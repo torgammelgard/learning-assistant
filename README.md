@@ -9,10 +9,22 @@ This assistant offers the user to,
 - statistical information about the user's progress
 - ...
 
+# Installation instructions
+```
+docker-compose build
+docker-compose up
+./gradlew assemble
+java -jar ./build/libs/learning-assistant.jar
+```
 
-mkdir -p data/db
-mongod --dbpath data/db
-
-
+## How to login to the mongo database
+```
+docker exec -it mongo-db bash
+mongo -u root -p example --authenticationDatabase admin
+```
+Mongo commands,
+```
+show dbs
 use learning_assistant
-db.createCollection("test")
+show collections
+```

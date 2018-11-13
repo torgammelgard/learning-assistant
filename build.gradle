@@ -1,15 +1,24 @@
 plugins {
-    id 'java'
-    id 'idea'
+  id 'java'
+  id 'idea'
 }
 
 dependencies {
-    
-    compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.9.0'
 
-    testImplementation 'junit:junit:4.12'
+  compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.9.0'
+
+  testImplementation 'junit:junit:4.12'
 }
 
 repositories {
-    jcenter()
+  jcenter()
+}
+
+task fatJar(type: Jar) {
+  manifest {
+    attributes 'Main-Class': 'app.App'
+  }
+  baseName = project.name + '-all'
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  with jar
 }

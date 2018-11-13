@@ -9,5 +9,5 @@ indent_size = 4
 [*.yml]
 indent_size = 2
 
-[*.json]
+[*.{json, gradle}]
 indent_size = 2

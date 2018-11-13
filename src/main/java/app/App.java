@@ -1,6 +1,7 @@
-package view;
+package app;
 
 import controller.Controller;
+import view.MainFrame;
 
 import javax.swing.*;
 

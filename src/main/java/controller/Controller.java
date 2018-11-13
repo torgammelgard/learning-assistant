@@ -25,18 +25,18 @@ public class Controller implements ActionListener {
     private StatPanel statPanel;
 
     public Controller(MainFrame view) {
-        mainFrame = view;
-        mainFrame.setController(this);
-        ctrlButtonPanel = view.getCtrlButtonPanel();
-        ctrlButtonPanel.connectToController(this);
-        statPanel = view.getStatPanel();
-
-        cardPanel = view.getCardPanel();
-
-        ctrlButtonPanel.setCollections(DBSource.getCollectionNames());
-        deckName = ctrlButtonPanel.getSelectedCollection();
-        collection = DBSource.getCollection(deckName);
-
+        if (view == null) {
+            System.exit(1);
+        }
+        this.mainFrame = view;
+        this.mainFrame.setController(this);
+        this.ctrlButtonPanel = view.getCtrlButtonPanel();
+        this.ctrlButtonPanel.connectToController(this);
+        this.statPanel = view.getStatPanel();
+        this.cardPanel = view.getCardPanel();
+        this.ctrlButtonPanel.setCollections(DBSource.getCollectionNames());
+        this.deckName = ctrlButtonPanel.getSelectedCollection();
+        this.collection = DBSource.getCollection(deckName);
     }
 
     /**

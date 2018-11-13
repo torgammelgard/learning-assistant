@@ -42,12 +42,7 @@ public class MainFrame extends JFrame {
 
         JButton testButton = new JButton("THIS IS A TEST BUTTON");
         testButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        testButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                DBSource.getStats("countries");
-            }
-        });
+        testButton.addActionListener(e -> DBSource.getStats("countries"));
 
         statPanel = new StatPanel();
         add(statPanel);

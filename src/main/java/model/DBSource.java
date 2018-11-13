@@ -1,6 +1,5 @@
 package model;
 
-import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.AggregateIterable;
@@ -10,8 +9,10 @@ import com.mongodb.client.MongoIterable;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
+import util.Logger;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
@@ -19,19 +20,32 @@ import java.util.regex.Pattern;
  */
 public class DBSource {
 
+    // Move to properties file
     private static final String DB_NAME = "learning_assistant";
+    private static final String COLLECTION_NAME = "countries";
+    private static final String KEY_QUESTION = "question";
+    private static final String KEY_ANSWER_ALTERNATIVES = "answerAlternatives";
+    private static final String KEY_PRIORITY = "priority";
     private static final MongoClientURI mongoClientURI = new MongoClientURI("mongodb://root:example@127.0.0.1:27017");
     private static final MongoClient mongoClient = new MongoClient(mongoClientURI);
+
+    private static MongoDatabase mongoDatabase = null;
 
     private DBSource() {
     }
 
     /**
-     *
      * @return the mongo client
      */
     public static MongoClient getMongoClient() {
         return mongoClient;
+    }
+
+    private static MongoDatabase getMongoDatabase() {
+        if (mongoDatabase == null) {
+            mongoDatabase = mongoClient.getDatabase(DB_NAME);
+        }
+        return mongoDatabase;
     }
 
     /**
@@ -48,87 +62,66 @@ public class DBSource {
      * @param collectionName
      */
     public static void addCard(Card card, String collectionName) {
-        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
-
-        db.getCollection(collectionName).insertOne(
-                new Document("question", card.getQuestion())
-                        .append("answerAlternatives", Arrays.asList(card.getAnswerAlternatives().toArray()))
-                        .append("priority", card.getPriority().ordinal()));
+        getMongoDatabase().getCollection(collectionName).insertOne(
+            new Document(KEY_QUESTION, card.getQuestion())
+                .append(KEY_ANSWER_ALTERNATIVES, Arrays.asList(card.getAnswerAlternatives().toArray()))
+                .append(KEY_PRIORITY, card.getPriority().ordinal()));
     }
 
     /**
-     * Deletes a card
+     * Deletes a card from a collection
      *
-     * @param card
-     * @param collectionName
-     * @return true if a card was deleted
+     * @param card           the card
+     * @param collectionName the name of the collection
+     * @return <code>true</code> if a card was deleted, <code>false</code> if not
      */
     public static boolean deleteCard(Card card, String collectionName) {
-        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
+        if (collectionName == null) {
+            Logger.log("CollectionName is null");
+            return false;
+        }
 
-        DeleteResult deleteResult = db.getCollection(collectionName).deleteOne(new Document("question", card.getQuestion()));
+        Document document = new Document(KEY_QUESTION, card.getQuestion());
+        DeleteResult deleteResult = mongoDatabase.getCollection(collectionName).deleteOne(document);
         return deleteResult.getDeletedCount() > 0;
     }
 
     /**
      * Updates a card
      *
-     * @param cardToEdit
-     * @param editedCard
-     * @param collectionName
-     * @return true if update was successful
+     * @param cardToEdit     the card to edit
+     * @param editedCard     the edited card
+     * @param collectionName the name of the collection
+     * @return <code>true</code> if update was successful, <code>false</code> if not
      */
     public static boolean editCard(Card cardToEdit, Card editedCard, String collectionName) {
-        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
-
-        UpdateResult updateResult = db.getCollection(collectionName).updateOne(new Document("question", cardToEdit.getQuestion()),
-                new Document("$set", new Document("question", editedCard.getQuestion())
-                        .append("answerAlternatives", Arrays.asList(editedCard.getAnswerAlternatives().toArray()))
-                        .append("priority", editedCard.getPriority().ordinal())));
+        UpdateResult updateResult = getMongoDatabase().getCollection(collectionName).updateOne(new Document("question", cardToEdit.getQuestion()),
+            new Document("$set", new Document("question", editedCard.getQuestion())
+                .append("answerAlternatives", Arrays.asList(editedCard.getAnswerAlternatives().toArray()))
+                .append("priority", editedCard.getPriority().ordinal())));
         return updateResult.getModifiedCount() > 0;
     }
 
     /**
-     *
      * @return a list of collection names
      */
     public static List<String> getCollectionNames() {
-        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
-
-        MongoIterable<String> collectionNames = db.listCollectionNames();
-
+        MongoIterable<String> collectionNames = getMongoDatabase().listCollectionNames();
         ArrayList<String> names = new ArrayList<>();
-
-        collectionNames.forEach(new Block<String>() {
-            @Override
-            public void apply(String s) {
-                names.add(s);
-            }
-        });
+        collectionNames.into(names);
         return names;
     }
 
     /**
-     * Creates a list of cards from a collection
+     * Gets the cards from a collection as a list
      *
-     * @param collectionName
-     * @return
+     * @param collectionName the collection name
+     * @return the cards as a list
      */
     public static List<Card> getCollection(String collectionName) {
-        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
-
-        FindIterable<Document> res = db.getCollection(collectionName).find();
-
+        FindIterable<Document> documents = getMongoDatabase().getCollection(collectionName).find();
         ArrayList<Card> cards = new ArrayList<>();
-
-        res.forEach(new Block<Document>() {
-
-            @Override
-            public void apply(Document document) {
-                cards.add(DBSource.documentToCard(document));
-            }
-        });
-
+        documents.map(DBSource::documentToCard).into(cards);
         return cards;
     }
 
@@ -141,21 +134,21 @@ public class DBSource {
      * @return
      */
     public static List<Card> search(String searchString, List<Integer> priorityFilter, String collectionName) {
-        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
-
-        AggregateIterable<Document> iterable = db.getCollection(collectionName).aggregate(
-                Arrays.asList(new Document("$match", new Document("question", Pattern.compile(searchString))
-                        .append("priority", new Document("$in", Arrays.asList(priorityFilter.toArray()))))));
-
-
+        AggregateIterable<Document> searchResult = getMongoDatabase().getCollection(collectionName).aggregate(
+            Arrays.asList(
+                new Document(
+                    "$match",
+                    new Document(KEY_QUESTION, Pattern.compile(searchString))
+                        .append(
+                            "priority",
+                            new Document(
+                                "$in", Arrays.asList(priorityFilter.toArray()))
+                        )
+                )
+            )
+        );
         ArrayList<Card> cards = new ArrayList<>();
-
-        iterable.forEach(new Block<Document>() {
-            @Override
-            public void apply(Document document) {
-                cards.add(DBSource.documentToCard(document));
-            }
-        });
+        searchResult.map(DBSource::documentToCard).into(cards);
         return cards;
     }
 
@@ -167,27 +160,19 @@ public class DBSource {
      */
     public static Map<String, Integer> getStats(String collectionName) {
         HashMap<String, Integer> map = new HashMap<>();
-        MongoDatabase db = mongoClient.getDatabase(DB_NAME);
-
-        AggregateIterable<Document> iterable = db.getCollection(collectionName).aggregate(
-                Arrays.asList(new Document("$group", new Document("_id", "$priority").append("count", new Document("$sum", 1))))
+        AggregateIterable<Document> iterable = getMongoDatabase().getCollection(collectionName).aggregate(
+            Arrays.asList(new Document("$group", new Document("_id", "$priority").append("count", new Document("$sum", 1))))
         );
 
-        iterable.forEach(new Block<Document>() {
-            @Override
-            public void apply(Document document) {
-                // the id will be equal to the Card.PRIORITY ordinals
-                if (document.getInteger("_id") != null) {
-                    Integer i = document.getInteger("_id");
-                    map.put(Card.PRIORITY.values()[i].toString(), document.getInteger("count"));
-                } else {
-                    map.put(null, document.getInteger("count"));
-                }
+        iterable.forEach((Consumer<? super Document>) (document) -> {
+            // the id will be equal to the Card.KEY_PRIORITY ordinals
+            if (document.getInteger("_id") != null) {
+                Integer i = document.getInteger("_id");
+                map.put(Card.PRIORITY.values()[i].toString(), document.getInteger("count"));
+            } else {
+                map.put(null, document.getInteger("count"));
             }
         });
-
-        System.out.println(map);
-
         return map;
     }
 
@@ -199,8 +184,8 @@ public class DBSource {
      */
     private static Card documentToCard(Document document) {
         Card card = new Card();
-        card.setQuestion(document.getString("question"));
-        List ansAlts = (ArrayList) document.get("answerAlternatives");
+        card.setQuestion(document.getString(KEY_QUESTION));
+        List ansAlts = (ArrayList) document.get(KEY_ANSWER_ALTERNATIVES);
         ArrayList<String> strings = new ArrayList<>();
         for (Object o : ansAlts) {
             if (o instanceof String) {
@@ -208,8 +193,8 @@ public class DBSource {
             }
         }
         card.setAnswerAlternatives(strings.toArray(new String[]{}));
-        if (document.keySet().contains("priority")) {
-            int priority = document.getInteger("priority");
+        if (document.keySet().contains(KEY_PRIORITY)) {
+            int priority = document.getInteger(KEY_PRIORITY);
             card.setPriority(Card.PRIORITY.values()[priority]);
         } else {
             card.setPriority(null);
