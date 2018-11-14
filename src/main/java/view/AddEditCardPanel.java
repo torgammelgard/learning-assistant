@@ -2,7 +2,6 @@ package view;
 
 import model.Card;
 import model.CardImpl;
-import util.LocalizationHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static model.Prioritizable.Priority;
+import static util.LocalizationHelper.getLocalString;
+import static util.LocalizationStrings.*;
 
 public class AddEditCardPanel extends JPanel {
 
     private Font font = new Font("Garamond", Font.PLAIN, 18);
-
-    private static final String EDITCARD_QUESTION = "edit.card.question";
 
     private Card newCardImpl;
     private int numAnswers;
@@ -43,7 +42,7 @@ public class AddEditCardPanel extends JPanel {
         add(priorityPanel, c);
         c.gridy++;
 
-        rowPanels.add(new RowPanel(LocalizationHelper.getLocalString(EDITCARD_QUESTION)));
+        rowPanels.add(new RowPanel(getLocalString(EDIT_CARD_QUESTION)));
         add(rowPanels.get(0), c);
 
         lastRowY = ++c.gridy;
@@ -53,13 +52,13 @@ public class AddEditCardPanel extends JPanel {
         c.gridwidth = 1;
         c.gridy++;
 
-        deleteAnswerButton = new JButton("Delete alternative answer");
+        deleteAnswerButton = new JButton(getLocalString(DELETE_ALTERNATIVE_ANSWER));
         deleteAnswerButton.addActionListener(e ->
             deleteAnswerField()
         );
         add(deleteAnswerButton, c);
 
-        addAnswerButton = new JButton("Add alternative answer");
+        addAnswerButton = new JButton(getLocalString(ADD_ALTERNATIVE_ANSWER));
         addAnswerButton.addActionListener(e ->
             addRowPanel("Answer " + String.valueOf(numAnswers++))
         );
