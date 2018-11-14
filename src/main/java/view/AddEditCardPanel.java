@@ -2,6 +2,7 @@ package view;
 
 import model.Card;
 import model.CardImpl;
+import util.LocalizationHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +14,8 @@ import static model.Prioritizable.Priority;
 public class AddEditCardPanel extends JPanel {
 
     private Font font = new Font("Garamond", Font.PLAIN, 18);
+
+    private static final String EDITCARD_QUESTION = "edit.card.question";
 
     private Card newCardImpl;
     private int numAnswers;
@@ -40,7 +43,7 @@ public class AddEditCardPanel extends JPanel {
         add(priorityPanel, c);
         c.gridy++;
 
-        rowPanels.add(new RowPanel("Question"));
+        rowPanels.add(new RowPanel(LocalizationHelper.getLocalString(EDITCARD_QUESTION)));
         add(rowPanels.get(0), c);
 
         lastRowY = ++c.gridy;
