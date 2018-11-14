@@ -1,6 +1,7 @@
 package view;
 
 import model.Card;
+import model.CardImpl;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;

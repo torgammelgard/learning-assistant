@@ -1,20 +1,20 @@
 package view;
 
 import model.Card;
+import model.CardImpl;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by torgammelgard on 2016-04-15.
- */
+import static model.Prioritizable.Priority;
+
 public class AddEditCardPanel extends JPanel {
 
     private Font font = new Font("Garamond", Font.PLAIN, 18);
 
-    private Card newCard;
+    private Card newCardImpl;
     private int numAnswers;
     private int lastRowY;
     private JButton addAnswerButton;
@@ -26,7 +26,7 @@ public class AddEditCardPanel extends JPanel {
     public AddEditCardPanel() {
         numAnswers = 1;
         rowPanels = new ArrayList<>();
-        newCard = new Card();
+        newCardImpl = new CardImpl();
 
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -35,7 +35,7 @@ public class AddEditCardPanel extends JPanel {
         c.gridy = 0;
         c.gridwidth = 2;
 
-        // add priority panel
+        // add Priority panel
         priorityPanel = new PriorityPanel();
         add(priorityPanel, c);
         c.gridy++;
@@ -52,13 +52,13 @@ public class AddEditCardPanel extends JPanel {
 
         deleteAnswerButton = new JButton("Delete alternative answer");
         deleteAnswerButton.addActionListener(e ->
-                deleteAnswerField()
+            deleteAnswerField()
         );
         add(deleteAnswerButton, c);
 
         addAnswerButton = new JButton("Add alternative answer");
         addAnswerButton.addActionListener(e ->
-                addRowPanel("Answer " + String.valueOf(numAnswers++))
+            addRowPanel("Answer " + String.valueOf(numAnswers++))
         );
         c.gridx = 1;
         add(addAnswerButton, c);
@@ -112,11 +112,11 @@ public class AddEditCardPanel extends JPanel {
     public Card getCard() {
         String question = rowPanels.get(0).getInput();
         String[] answers = getInputs();
-        newCard = new Card();
-        newCard.setQuestion(question);
-        newCard.setAnswerAlternatives(answers);
-        newCard.setPriority(priorityPanel.getSelectedPriority());
-        return newCard;
+        newCardImpl = new CardImpl();
+        newCardImpl.setQuestion(question);
+        newCardImpl.setAnswerAlternatives(answers);
+        newCardImpl.setPriority(priorityPanel.getSelectedPriority());
+        return newCardImpl;
     }
 
     /**
@@ -208,21 +208,21 @@ public class AddEditCardPanel extends JPanel {
         public PriorityPanel() {
             buttons = new ArrayList<>();
 
-            JRadioButton rb1 = new JRadioButton(Card.PRIORITY.LOW.toString());
+            JRadioButton rb1 = new JRadioButton(Priority.LOW.toString());
             buttons.add(rb1);
-            rb1.setActionCommand(Card.PRIORITY.LOW.toString());
+            rb1.setActionCommand(Priority.LOW.toString());
             rb1.setSelected(false);
             add(rb1);
 
-            JRadioButton rb2 = new JRadioButton(Card.PRIORITY.MEDIUM.toString());
+            JRadioButton rb2 = new JRadioButton(Priority.MEDIUM.toString());
             buttons.add(rb2);
-            rb2.setActionCommand(Card.PRIORITY.MEDIUM.toString());
+            rb2.setActionCommand(Priority.MEDIUM.toString());
             rb2.setSelected(true);
             add(rb2);
 
-            JRadioButton rb3 = new JRadioButton(Card.PRIORITY.HIGH.toString());
+            JRadioButton rb3 = new JRadioButton(Priority.HIGH.toString());
             buttons.add(rb3);
-            rb3.setActionCommand(Card.PRIORITY.HIGH.toString());
+            rb3.setActionCommand(Priority.HIGH.toString());
             rb3.setSelected(false);
             add(rb3);
 
@@ -233,7 +233,7 @@ public class AddEditCardPanel extends JPanel {
 
         }
 
-        public void setSelectedPriority(Card.PRIORITY priority) {
+        public void setSelectedPriority(Priority priority) {
             for (int i = 0; i < buttons.size(); i++) {
                 if (priority != null) {
                     if (buttons.get(i).getActionCommand().equals(priority.toString()))
@@ -245,10 +245,10 @@ public class AddEditCardPanel extends JPanel {
             }
         }
 
-        public Card.PRIORITY getSelectedPriority() {
+        public Priority getSelectedPriority() {
             for (int i = 0; i < buttons.size(); i++) {
                 if (buttons.get(i).isSelected())
-                    return Card.PRIORITY.values()[i];
+                    return Priority.values()[i];
             }
             return null;
         }

@@ -1,6 +1,7 @@
 package controller;
 
 import model.Card;
+import model.CardImpl;
 import model.DBSource;
 import view.*;
 
@@ -9,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import static model.Prioritizable.Priority;
 
 /**
  * Created by torgammelgard on 2016-04-15.
@@ -57,7 +60,7 @@ public class Controller implements ActionListener {
         } else {
             ctrlButtonPanel.setCardIndexLabel(0, deckSize);
             currentIndex = 0;
-            cardPanel.showCard(new Card());
+            cardPanel.showCard(new CardImpl());
         }
         statPanel.updateForCollection(deckName);
     }
@@ -105,7 +108,7 @@ public class Controller implements ActionListener {
     private void newCard() {
         AddEditCardPanel addEditCardPanel = new AddEditCardPanel();
         JScrollPane scrollPane = new JScrollPane(addEditCardPanel);
-        int result = JOptionPane.showConfirmDialog(mainFrame, scrollPane, "New Card",
+        int result = JOptionPane.showConfirmDialog(mainFrame, scrollPane, "New card",
                 JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             DBSource.addCard(addEditCardPanel.getCard(), deckName);
@@ -129,7 +132,7 @@ public class Controller implements ActionListener {
         AddEditCardPanel addEditCardPanel = new AddEditCardPanel();
         addEditCardPanel.setInputs(cardToEdit);
         JScrollPane scrollPane = new JScrollPane(addEditCardPanel);
-        int result = JOptionPane.showConfirmDialog(mainFrame, scrollPane, "Edit Card",
+        int result = JOptionPane.showConfirmDialog(mainFrame, scrollPane, "Edit card",
                 JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             DBSource.editCard(collection.get(currentIndex - 1), addEditCardPanel.getCard(), deckName);
@@ -159,7 +162,7 @@ public class Controller implements ActionListener {
                 cardPanel.showCard(collection.get(currentIndex - 1));
             } else {
                 currentIndex = 0;
-                cardPanel.showCard(new Card());
+                cardPanel.showCard(new CardImpl());
             }
             ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
         }
@@ -181,7 +184,7 @@ public class Controller implements ActionListener {
     }
 
     /**
-     * Finds the priority filter to be used in the search
+     * Finds the Priority filter to be used in the search
      *
      * @param s
      * @return a list of integers referring the which priorities that should be used
@@ -203,13 +206,13 @@ public class Controller implements ActionListener {
             for (String prioStr : prioStrArr) {
                 switch (prioStr.trim()) {
                     case "LOW":
-                        priorityFilter.add(Card.PRIORITY.LOW.ordinal());
+                        priorityFilter.add(Priority.LOW.ordinal());
                         break;
                     case "MEDIUM":
-                        priorityFilter.add(Card.PRIORITY.MEDIUM.ordinal());
+                        priorityFilter.add(Priority.MEDIUM.ordinal());
                         break;
                     case "HIGH":
-                        priorityFilter.add(Card.PRIORITY.HIGH.ordinal());
+                        priorityFilter.add(Priority.HIGH.ordinal());
                         break;
                     default:
                         break;

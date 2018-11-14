@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
+import static model.Prioritizable.*;
+
 /**
  * Created by torgammelgard on 2016-04-11.
  */
@@ -25,7 +27,7 @@ public class DBSource {
     private static final String COLLECTION_NAME = "countries";
     private static final String KEY_QUESTION = "question";
     private static final String KEY_ANSWER_ALTERNATIVES = "answerAlternatives";
-    private static final String KEY_PRIORITY = "priority";
+    private static final String KEY_PRIORITY = "Priority";
     private static final MongoClientURI mongoClientURI = new MongoClientURI("mongodb://root:example@127.0.0.1:27017");
     private static final MongoClient mongoClient = new MongoClient(mongoClientURI);
 
@@ -56,10 +58,10 @@ public class DBSource {
     }
 
     /**
-     * Adds a card
+     * Adds a card to a collection
      *
-     * @param card
-     * @param collectionName
+     * @param card a card
+     * @param collectionName a collection name
      */
     public static void addCard(Card card, String collectionName) {
         getMongoDatabase().getCollection(collectionName).insertOne(
@@ -71,7 +73,7 @@ public class DBSource {
     /**
      * Deletes a card from a collection
      *
-     * @param card           the card
+     * @param card       the card
      * @param collectionName the name of the collection
      * @return <code>true</code> if a card was deleted, <code>false</code> if not
      */
@@ -95,10 +97,12 @@ public class DBSource {
      * @return <code>true</code> if update was successful, <code>false</code> if not
      */
     public static boolean editCard(Card cardToEdit, Card editedCard, String collectionName) {
-        UpdateResult updateResult = getMongoDatabase().getCollection(collectionName).updateOne(new Document("question", cardToEdit.getQuestion()),
-            new Document("$set", new Document("question", editedCard.getQuestion())
-                .append("answerAlternatives", Arrays.asList(editedCard.getAnswerAlternatives().toArray()))
-                .append("priority", editedCard.getPriority().ordinal())));
+        UpdateResult updateResult = getMongoDatabase().getCollection(collectionName)
+            .updateOne(
+                new Document(KEY_QUESTION, cardToEdit.getQuestion()),
+                new Document("$set", new Document(KEY_QUESTION, editedCard.getQuestion())
+                    .append(KEY_ANSWER_ALTERNATIVES, Arrays.asList(editedCard.getAnswerAlternatives().toArray()))
+                    .append(KEY_PRIORITY, editedCard.getPriority().ordinal())));
         return updateResult.getModifiedCount() > 0;
     }
 
@@ -128,10 +132,10 @@ public class DBSource {
     /**
      * Queries the collection using a search string and a filter
      *
-     * @param searchString
-     * @param priorityFilter
-     * @param collectionName
-     * @return
+     * @param searchString a search query
+     * @param priorityFilter a priority filter
+     * @param collectionName a collection name
+     * @return a list of cards which matches the search query
      */
     public static List<Card> search(String searchString, List<Integer> priorityFilter, String collectionName) {
         AggregateIterable<Document> searchResult = getMongoDatabase().getCollection(collectionName).aggregate(
@@ -140,7 +144,7 @@ public class DBSource {
                     "$match",
                     new Document(KEY_QUESTION, Pattern.compile(searchString))
                         .append(
-                            "priority",
+                            KEY_PRIORITY,
                             new Document(
                                 "$in", Arrays.asList(priorityFilter.toArray()))
                         )
@@ -161,14 +165,13 @@ public class DBSource {
     public static Map<String, Integer> getStats(String collectionName) {
         HashMap<String, Integer> map = new HashMap<>();
         AggregateIterable<Document> iterable = getMongoDatabase().getCollection(collectionName).aggregate(
-            Arrays.asList(new Document("$group", new Document("_id", "$priority").append("count", new Document("$sum", 1))))
+            Arrays.asList(new Document("$group", new Document("_id", "$Priority").append("count", new Document("$sum", 1))))
         );
 
         iterable.forEach((Consumer<? super Document>) (document) -> {
-            // the id will be equal to the Card.KEY_PRIORITY ordinals
             if (document.getInteger("_id") != null) {
                 Integer i = document.getInteger("_id");
-                map.put(Card.PRIORITY.values()[i].toString(), document.getInteger("count"));
+                map.put(Priority.values()[i].toString(), document.getInteger("count"));
             } else {
                 map.put(null, document.getInteger("count"));
             }
@@ -177,14 +180,14 @@ public class DBSource {
     }
 
     /**
-     * Creates a Card from a Document
+     * Creates a Card from a Mongo document
      *
-     * @param document
-     * @return
+     * @param document a Mongo document
+     * @return a new card
      */
     private static Card documentToCard(Document document) {
-        Card card = new Card();
-        card.setQuestion(document.getString(KEY_QUESTION));
+        Card newCard = new CardImpl();
+        newCard.setQuestion(document.getString(KEY_QUESTION));
         List ansAlts = (ArrayList) document.get(KEY_ANSWER_ALTERNATIVES);
         ArrayList<String> strings = new ArrayList<>();
         for (Object o : ansAlts) {
@@ -192,13 +195,13 @@ public class DBSource {
                 strings.add((String) o);
             }
         }
-        card.setAnswerAlternatives(strings.toArray(new String[]{}));
+        newCard.setAnswerAlternatives(strings.toArray(new String[]{}));
         if (document.keySet().contains(KEY_PRIORITY)) {
             int priority = document.getInteger(KEY_PRIORITY);
-            card.setPriority(Card.PRIORITY.values()[priority]);
+            newCard.setPriority(Priority.values()[priority]);
         } else {
-            card.setPriority(null);
+            newCard.setPriority(null);
         }
-        return card;
+        return newCard;
     }
 }

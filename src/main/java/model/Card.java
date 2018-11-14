@@ -1,50 +1,17 @@
 package model;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by torgammelgard on 2016-04-12.
+ * A card with one question and multiple answers.
  */
-public class Card {
-    public enum PRIORITY {LOW, MEDIUM, HIGH}
+public interface Card extends Prioritizable {
 
-    private String question;
-    private String[] answerAlternatives;
+    String getQuestion();
 
-    private PRIORITY priority;
+    void setQuestion(String question);
 
-    public Card() {
-        question = "";
-        answerAlternatives = new String[1];
-    }
+    List<String> getAnswerAlternatives();
 
-    public PRIORITY getPriority() {
-        return priority;
-    }
-
-    public void setPriority(PRIORITY priority) {
-        this.priority = priority;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public List<String> getAnswerAlternatives() {
-        return Arrays.asList(answerAlternatives);
-    }
-
-    public void setAnswerAlternatives(String[] answerAlternatives) {
-        this.answerAlternatives = answerAlternatives;
-    }
-
-    @Override
-    public String toString() {
-        return "Card with question (" + question + ")" + " and correct answer (" + answerAlternatives[0] + ")";
-    }
+    void setAnswerAlternatives(String[] answerAlternatives);
 }
