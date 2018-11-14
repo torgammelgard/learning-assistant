@@ -21,7 +21,6 @@ public class LocalizationHelper {
     }
 
     public static String getLocalString(String key) {
-        Logger.log(Locale.getDefault().toString() + ", " + getBundle().getString(key));
         return getBundle().getString(key);
     }
 }

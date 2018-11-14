@@ -159,8 +159,8 @@ public class DBSource {
     /**
      * Queries the collection for information
      *
-     * @param collectionName
-     * @return
+     * @param collectionName the name of the collection
+     * @return a map of statistics
      */
     public static Map<String, Integer> getStats(String collectionName) {
         HashMap<String, Integer> map = new HashMap<>();
