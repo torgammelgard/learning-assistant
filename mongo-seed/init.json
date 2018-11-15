@@ -1,7 +1,7 @@
 [
   {
-    "_id": 1,
-    "question": "foo",
-    "answerAlternatives": ["hej", "bye"]
-  }
+  "_id": 1,
+  "question": "foo",
+  "answerAlternatives": ["hej", "bye"]
+}
 ]

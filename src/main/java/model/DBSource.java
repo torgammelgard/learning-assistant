@@ -43,7 +43,7 @@ public class DBSource {
         return mongoClient;
     }
 
-    private static MongoDatabase getMongoDatabase() {
+    public static MongoDatabase getMongoDatabase() {
         if (mongoDatabase == null) {
             mongoDatabase = mongoClient.getDatabase(DB_NAME);
         }
