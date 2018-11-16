@@ -11,9 +11,9 @@ This assistant offers the user to,
 
 # Installation instructions
 ```
+./gradlew war
 docker-compose build
 docker-compose up
-./gradlew assemble
 java -jar ./build/libs/learning-assistant.jar
 ```
 
