@@ -1,7 +1,7 @@
 package view;
 
-import model.Card;
-import model.CardImpl;
+import model.entities.Card;
+import model.entities.CardImpl;
 
 import javax.swing.*;
 import java.awt.*;

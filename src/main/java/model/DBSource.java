@@ -8,6 +8,8 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import model.entities.Card;
+import model.entities.CardImpl;
 import org.bson.Document;
 import util.Logger;
 
@@ -15,7 +17,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import static model.Prioritizable.*;
+import static model.Prioritizable.Priority;
 
 /**
  * Created by torgammelgard on 2016-04-11.
@@ -43,7 +45,7 @@ public class DBSource {
         return mongoClient;
     }
 
-    public static MongoDatabase getMongoDatabase() {
+    private static MongoDatabase getMongoDatabase() {
         if (mongoDatabase == null) {
             mongoDatabase = mongoClient.getDatabase(DB_NAME);
         }
@@ -60,7 +62,7 @@ public class DBSource {
     /**
      * Adds a card to a collection
      *
-     * @param card a card
+     * @param card           a card
      * @param collectionName a collection name
      */
     public static void addCard(Card card, String collectionName) {
@@ -73,7 +75,7 @@ public class DBSource {
     /**
      * Deletes a card from a collection
      *
-     * @param card       the card
+     * @param card           the card
      * @param collectionName the name of the collection
      * @return <code>true</code> if a card was deleted, <code>false</code> if not
      */
@@ -132,7 +134,7 @@ public class DBSource {
     /**
      * Queries the collection using a search string and a filter
      *
-     * @param searchString a search query
+     * @param searchString   a search query
      * @param priorityFilter a priority filter
      * @param collectionName a collection name
      * @return a list of cards which matches the search query

@@ -1,8 +1,10 @@
-package model;
+package model.entities;
 
+import javax.persistence.Entity;
 import java.util.Arrays;
 import java.util.List;
 
+@Entity
 public class CardImpl implements Card {
 
     private String question;

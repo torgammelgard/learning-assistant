@@ -6,8 +6,6 @@ import model.DBSource;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Created by torgammelgard on 2016-04-11.

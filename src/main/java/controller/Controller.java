@@ -1,10 +1,13 @@
 package controller;
 
-import model.Card;
-import model.CardImpl;
+import model.CardRepository;
 import model.DBSource;
+import model.entities.Card;
+import model.entities.CardImpl;
 import view.*;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +19,7 @@ import static model.Prioritizable.Priority;
 /**
  * Created by torgammelgard on 2016-04-15.
  */
+@ApplicationScoped
 public class Controller implements ActionListener {
 
     private int deckSize;
@@ -26,6 +30,8 @@ public class Controller implements ActionListener {
     private CardPanel cardPanel;
     private MainFrame mainFrame;
     private StatPanel statPanel;
+
+    public Controller() {}
 
     public Controller(MainFrame view) {
         if (view == null) {
@@ -91,13 +97,16 @@ public class Controller implements ActionListener {
         ctrlButtonPanel.setCardIndexLabel(currentIndex, deckSize);
     }
 
+    @Inject
+    private CardRepository cardRepository;
+
     /**
      * Deletes a card and updates panels
      */
     private void deleteCard() {
         if (deckSize < 1)
             return;
-        DBSource.deleteCard(collection.get(currentIndex - 1), deckName);
+        cardRepository.deleteCard(collection.get(currentIndex - 1), deckName);
         changeDeck(deckName);
         statPanel.updateForCollection(deckName);
     }

@@ -1,4 +1,6 @@
-package model;
+package model.entities;
+
+import model.Prioritizable;
 
 import java.util.List;
 

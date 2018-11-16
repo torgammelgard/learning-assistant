@@ -1,7 +1,6 @@
 package api;
 
-import model.CardRepository;
-import model.entities.Card;
+import model.CollectionRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -15,20 +14,19 @@ import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet(
-    name = "api_servlet",
-    urlPatterns = {"/api/cards"}
+    name = "api_collection_servlet",
+    urlPatterns = {"/api/collection"}
 )
 @RequestScoped
-public class ApiServlet extends HttpServlet {
+public class ApiCollectionServlet extends HttpServlet {
 
     @Inject
-    private CardRepository cardRepository;
+    private CollectionRepository collectionRepository;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter printer = resp.getWriter();
-        List<Card> cards = cardRepository.getCards("countries"); // TODO
-        cards.stream().map(Card::toString).map(s -> s.concat("\n")).forEach(printer::write);
-
+        PrintWriter printWriter = resp.getWriter();
+        List<String> collectionNames = collectionRepository.getCollectionNames();
+        collectionNames.forEach(printWriter::write);
     }
 }
