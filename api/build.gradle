@@ -21,4 +21,5 @@ dependencies {
 
 war {
   destinationDir = file("$rootDir/wildfly")
+  archiveName = 'learning-assistant.war'
 }
