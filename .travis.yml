@@ -6,3 +6,4 @@ before_script:
 services:
   - mongodb
   - docker
+script: ./gradlew :api:test
