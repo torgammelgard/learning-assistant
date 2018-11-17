@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static model.DatabaseHelper.*;
 
@@ -30,10 +31,10 @@ public class CardDAO {
         this.mongoDatabase = mongoClient.getDatabase(DB_NAME);
     }
 
-    public Card getCard(long id) {
+    public Optional<Card> getCard(long id) {
         BasicDBObject query = new BasicDBObject();
         query.put(KEY_ID, id);
-        return mongoDatabase.getCollection(COLLECTION_NAME).find(query).map(docToCard).first();
+        return Optional.ofNullable(mongoDatabase.getCollection(COLLECTION_NAME).find(query).map(docToCard).first());
     }
 
     List<Card> getCards() {

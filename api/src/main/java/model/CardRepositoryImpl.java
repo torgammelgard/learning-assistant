@@ -5,6 +5,7 @@ import model.entities.Card;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class CardRepositoryImpl implements CardRepository {
@@ -13,7 +14,7 @@ public class CardRepositoryImpl implements CardRepository {
     private CardDAO cardDAO;
 
     @Override
-    public Card getCard(long id) {
+    public Optional<Card> getCard(long id) {
         return cardDAO.getCard(id);
     }
 

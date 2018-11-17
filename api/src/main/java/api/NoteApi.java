@@ -15,6 +15,8 @@ import javax.ws.rs.Produces;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Optional;
+import java.util.function.Function;
 
 @Path("api")
 public class NoteApi {
@@ -26,11 +28,13 @@ public class NoteApi {
     @Produces("application/json")
     @Path("card/{id}")
     public String card(@PathParam("id") long id) {
-        Card card = cardRepository.getCard(id);
+        Optional<Card> card = cardRepository.getCard(id);
+        return card.map(card2Json).orElse("bad bad"); // TODO return 404
+    }
 
+    private Function<Card, String> card2Json = card -> {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         card.getAnswerAlternatives().forEach(arrayBuilder::add);
-
         JsonObjectBuilder objectBuilder = Json.createObjectBuilder()
             .add("id", card.getId())
             .add("question", card.getQuestion())
@@ -43,7 +47,6 @@ public class NoteApi {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.print(jsonString);
         return (jsonString != null) ? jsonString : "";
-    }
+    };
 }
