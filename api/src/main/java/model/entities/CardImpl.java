@@ -7,14 +7,24 @@ import java.util.List;
 @Entity
 public class CardImpl implements Card {
 
+    private long id;
     private String question;
     private String[] answerAlternatives;
-
     private Priority priority;
 
     public CardImpl() {
         question = "";
         answerAlternatives = new String[1];
+    }
+
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override

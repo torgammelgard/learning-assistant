@@ -9,6 +9,10 @@ import java.util.List;
  */
 public interface Card extends Prioritizable {
 
+    long getId();
+
+    void setId(long id);
+
     String getQuestion();
 
     void setQuestion(String question);

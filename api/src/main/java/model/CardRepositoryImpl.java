@@ -13,8 +13,8 @@ public class CardRepositoryImpl implements CardRepository {
     private CardDAO cardDAO;
 
     @Override
-    public Card getCard(String collectionName) {
-        return cardDAO.getCard();
+    public Card getCard(long id) {
+        return cardDAO.getCard(id);
     }
 
     @Override
