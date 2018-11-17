@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 public class LocalizationHelper {
 
-    static final String RESOURCE_BUNDLE_BASENAME = "strings";
+    private static final String RESOURCE_BUNDLE_BASENAME = "strings";
 
     private static ResourceBundle bundle;
 

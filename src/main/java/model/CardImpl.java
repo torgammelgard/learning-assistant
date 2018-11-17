@@ -6,24 +6,8 @@ import java.util.List;
 public class CardImpl implements Card {
 
     private String question;
-    private String[] answerAlternatives;
-
+    private List<String> answerAlternatives;
     private Priority priority;
-
-    public CardImpl() {
-        question = "";
-        answerAlternatives = new String[1];
-    }
-
-    @Override
-    public Priority getPriority() {
-        return priority;
-    }
-
-    @Override
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
 
     @Override
     public String getQuestion() {
@@ -37,16 +21,21 @@ public class CardImpl implements Card {
 
     @Override
     public List<String> getAnswerAlternatives() {
-        return Arrays.asList(answerAlternatives);
+        return answerAlternatives;
     }
 
     @Override
     public void setAnswerAlternatives(String[] answerAlternatives) {
-        this.answerAlternatives = answerAlternatives;
+        this.answerAlternatives = Arrays.asList(answerAlternatives);
     }
 
     @Override
-    public String toString() {
-        return "CardImpl with question (" + question + ")" + " and correct answer (" + answerAlternatives[0] + ")";
+    public Priority getPriority() {
+        return priority;
+    }
+
+    @Override
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 }

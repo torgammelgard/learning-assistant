@@ -1,6 +1,6 @@
 package view;
 
-import model.DBSource;
+import model.NoteService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,11 +13,13 @@ public class StatPanel extends JPanel {
     private JLabel totalLabel;
     private JLabel priorityInfoLabel;
 
+    private NoteService noteService;
+
     public StatPanel() {
         totalLabel = new JLabel();
         priorityInfoLabel = new JLabel();
 
-        setBackground(MainFrame.BACKGROUND_COLOR);
+        setBackground(Theme.BACKGROUND_COLOR);
 
         setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -74,7 +76,7 @@ public class StatPanel extends JPanel {
      * @param collection
      */
     public void updateForCollection(String collection) {
-        Map<String, Integer> stats = DBSource.getStats(collection);
+        Map<String, Integer> stats = noteService.getStats(collection);
 
         int total = 0;
 

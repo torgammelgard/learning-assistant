@@ -11,11 +11,13 @@ This assistant offers the user to,
 
 # Installation instructions
 ```
-./gradlew war
+./gradlew fatJar war
 docker-compose build
 docker-compose up
-java -jar ./build/libs/learning-assistant.jar
+java -jar ./build/libs/learning-assistant-all.jar
 ```
+
+Go to [http://127.0.0.1:8080/learning-assistant/](http://127.0.0.1:8080/learning-assistant/)
 
 ## How to login to the mongo database
 ```

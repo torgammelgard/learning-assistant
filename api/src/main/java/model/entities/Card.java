@@ -1,8 +1,13 @@
-package model;
+package model.entities;
+
+import model.Prioritizable;
 
 import java.util.List;
 
-public interface Card {
+/**
+ * A card with one question and multiple answers.
+ */
+public interface Card extends Prioritizable {
 
     String getQuestion();
 
@@ -11,8 +16,4 @@ public interface Card {
     List<String> getAnswerAlternatives();
 
     void setAnswerAlternatives(String[] answerAlternatives);
-
-    Priority getPriority();
-
-    void setPriority(Priority priority);
 }

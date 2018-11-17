@@ -1,7 +1,6 @@
 package view;
 
 import model.Card;
-import model.CardImpl;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -9,6 +8,7 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by torgammelgard on 2016-04-12.
@@ -28,7 +28,7 @@ public class CardPanel extends JPanel {
     private DefaultListModel<AnswerJTextField> listModel;
 
     public CardPanel() {
-        setBackground(MainFrame.BACKGROUND_COLOR);
+        setBackground(Theme.BACKGROUND_COLOR);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setMaximumSize(new Dimension(WIDTH, HEIGHT));
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -86,7 +86,7 @@ public class CardPanel extends JPanel {
      */
     public void showCard(Card card) {
         question = card.getQuestion();
-        ArrayList<String> answerAlternatives = new ArrayList<>(card.getAnswerAlternatives());
+        List<String> answerAlternatives = card.getAnswerAlternatives();
         answers.clear();
         int c = 0;
         AnswerJTextField ans;

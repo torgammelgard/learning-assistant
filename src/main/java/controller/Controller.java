@@ -2,7 +2,7 @@ package controller;
 
 import model.Card;
 import model.CardImpl;
-import model.DBSource;
+import model.NoteService;
 import view.*;
 
 import javax.swing.*;
@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static model.Prioritizable.Priority;
+import static model.Priority.*;
 
 /**
  * Created by torgammelgard on 2016-04-15.
@@ -27,19 +27,22 @@ public class Controller implements ActionListener {
     private MainFrame mainFrame;
     private StatPanel statPanel;
 
-    public Controller(MainFrame view) {
+    private NoteService noteService;
+
+    public Controller(MainFrame view, NoteService noteService) {
         if (view == null) {
             System.exit(1);
         }
+        this.noteService = noteService;
         this.mainFrame = view;
         this.mainFrame.setController(this);
         this.ctrlButtonPanel = view.getCtrlButtonPanel();
         this.ctrlButtonPanel.connectToController(this);
         this.statPanel = view.getStatPanel();
         this.cardPanel = view.getCardPanel();
-        this.ctrlButtonPanel.setCollections(DBSource.getCollectionNames());
+        this.ctrlButtonPanel.setCollections(noteService.getCollectionNames());
         this.deckName = ctrlButtonPanel.getSelectedCollection();
-        this.collection = DBSource.getCollection(deckName);
+        this.collection = noteService.getCollection(deckName);
     }
 
     /**
@@ -48,7 +51,7 @@ public class Controller implements ActionListener {
      * @param deckName
      */
     private void changeDeck(String deckName) {
-        collection = DBSource.getCollection(deckName);
+        collection = noteService.getCollection(deckName);
         deckSize = collection.size();
         this.deckName = deckName;
         ctrlButtonPanel.setCollectionName(deckName);
@@ -97,7 +100,7 @@ public class Controller implements ActionListener {
     private void deleteCard() {
         if (deckSize < 1)
             return;
-        DBSource.deleteCard(collection.get(currentIndex - 1), deckName);
+        noteService.deleteCard(collection.get(currentIndex - 1), deckName);
         changeDeck(deckName);
         statPanel.updateForCollection(deckName);
     }
@@ -111,7 +114,7 @@ public class Controller implements ActionListener {
         int result = JOptionPane.showConfirmDialog(mainFrame, scrollPane, "New card",
                 JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-            DBSource.addCard(addEditCardPanel.getCard(), deckName);
+            noteService.addCard(addEditCardPanel.getCard(), deckName);
 
             changeDeck(deckName);
             currentIndex = collection.size();
@@ -135,7 +138,7 @@ public class Controller implements ActionListener {
         int result = JOptionPane.showConfirmDialog(mainFrame, scrollPane, "Edit card",
                 JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
-            DBSource.editCard(collection.get(currentIndex - 1), addEditCardPanel.getCard(), deckName);
+            noteService.editCard(collection.get(currentIndex - 1), addEditCardPanel.getCard(), deckName);
 
             changeDeck(deckName);
             currentIndex = currentIndexBackup;
@@ -154,7 +157,7 @@ public class Controller implements ActionListener {
         if (!searchString.equals("")) {
             List<Integer> filter = findPriorityFilter(searchString);
             searchString = fixSearchString(searchString);
-            collection = DBSource.search(searchString, filter, deckName);
+            collection = noteService.search(searchString, filter, deckName);
             ctrlButtonPanel.setCollectionName(deckName + "[" + searchString + "]");
             deckSize = collection.size();
             if (deckSize > 0) {
@@ -206,13 +209,13 @@ public class Controller implements ActionListener {
             for (String prioStr : prioStrArr) {
                 switch (prioStr.trim()) {
                     case "LOW":
-                        priorityFilter.add(Priority.LOW.ordinal());
+                        priorityFilter.add(LOW.ordinal());
                         break;
                     case "MEDIUM":
-                        priorityFilter.add(Priority.MEDIUM.ordinal());
+                        priorityFilter.add(MEDIUM.ordinal());
                         break;
                     case "HIGH":
-                        priorityFilter.add(Priority.HIGH.ordinal());
+                        priorityFilter.add(HIGH.ordinal());
                         break;
                     default:
                         break;
