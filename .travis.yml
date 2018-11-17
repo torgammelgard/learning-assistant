@@ -1,0 +1,5 @@
+language: java
+before_script:
+  - mongo learning-assistant --eval 'db.createUser({user:"admin",pwd:"example",roles:["readWrite"]});'
+services:
+  - mongodb
