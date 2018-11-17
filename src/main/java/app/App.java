@@ -1,6 +1,8 @@
 package app;
 
 import controller.Controller;
+import model.NoteService;
+import model.NoteServiceImpl;
 import util.Logger;
 import view.MainFrame;
 
@@ -16,7 +18,8 @@ public class App {
         handle(args);
         SwingUtilities.invokeLater(() -> {
             MainFrame mainFrame = new MainFrame();
-            Controller controller = new Controller(mainFrame);
+            NoteService noteService = new NoteServiceImpl();
+            Controller controller = new Controller(mainFrame, noteService);
         });
     }
 

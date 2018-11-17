@@ -1,14 +1,15 @@
 package view;
 
-import model.entities.Card;
-import model.entities.CardImpl;
+import model.Card;
+import model.CardImpl;
+import model.Priority;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static model.Prioritizable.Priority;
+import static model.Priority.*;
 import static util.LocalizationHelper.getLocalString;
 import static util.LocalizationStrings.*;
 
@@ -210,21 +211,21 @@ public class AddEditCardPanel extends JPanel {
         public PriorityPanel() {
             buttons = new ArrayList<>();
 
-            JRadioButton rb1 = new JRadioButton(Priority.LOW.toString());
+            JRadioButton rb1 = new JRadioButton(LOW.toString());
             buttons.add(rb1);
-            rb1.setActionCommand(Priority.LOW.toString());
+            rb1.setActionCommand(LOW.toString());
             rb1.setSelected(false);
             add(rb1);
 
-            JRadioButton rb2 = new JRadioButton(Priority.MEDIUM.toString());
+            JRadioButton rb2 = new JRadioButton(MEDIUM.toString());
             buttons.add(rb2);
-            rb2.setActionCommand(Priority.MEDIUM.toString());
+            rb2.setActionCommand(MEDIUM.toString());
             rb2.setSelected(true);
             add(rb2);
 
-            JRadioButton rb3 = new JRadioButton(Priority.HIGH.toString());
+            JRadioButton rb3 = new JRadioButton(HIGH.toString());
             buttons.add(rb3);
-            rb3.setActionCommand(Priority.HIGH.toString());
+            rb3.setActionCommand(HIGH.toString());
             rb3.setSelected(false);
             add(rb3);
 

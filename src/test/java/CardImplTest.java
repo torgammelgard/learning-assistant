@@ -1,5 +1,5 @@
-import model.entities.Card;
-import model.entities.CardImpl;
+import model.Card;
+import model.CardImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

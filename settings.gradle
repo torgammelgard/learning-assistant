@@ -1,1 +1,5 @@
 rootProject.name = 'learning-assistant'
+
+include("api")
+include 'api'
+
