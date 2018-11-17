@@ -1,0 +1,9 @@
+sudo: required
+language: java
+before_script:
+  - sleep 15
+  - mongo learning-assistant --eval 'db.createUser({user:"admin",pwd:"example",roles:["readWrite"]});'
+services:
+  - mongodb
+  - docker
+script: ./gradlew :api:test
