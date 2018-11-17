@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/torgammelgard/learning-assistant.svg?branch=master)](https://travis-ci.org/torgammelgard/learning-assistant)
+
 # Learning Assistant
 A database project (MongoDB) for a school assignment.
 
